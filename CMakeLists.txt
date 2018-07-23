@@ -71,12 +71,12 @@ include_directories(
 )
 add_library(${PROJECT_NAME}
   src/planner_core.cpp
-  src/costmap_model.cpp
+  src/collisiondetection/costmap_model.cpp
   src/algorithm/algorithm.cpp
   src/algorithm/AStar.cpp
   src/algorithm/HAStar.cpp
   src/algorithm/primitive.cpp
-  src/collisiondetection.cpp
+  src/collisiondetection/collisiondetection.cpp
   src/dynamicvoronoi.cpp
   src/node2d.cpp
   src/pose2d.cpp
@@ -107,12 +107,12 @@ target_link_libraries(${PROJECT_NAME} ${OMPL_LIBRARIES})
 
 add_executable(planner
   src/plan_node.cpp 
-  src/costmap_model.cpp
+  src/collisiondetection/costmap_model.cpp
   src/algorithm/algorithm.cpp
   src/algorithm/AStar.cpp
   src/algorithm/HAStar.cpp
   src/algorithm/primitive.cpp
-  src/collisiondetection.cpp
+  src/collisiondetection/collisiondetection.cpp
   src/dynamicvoronoi.cpp
   src/node2d.cpp
   src/pose2d.cpp

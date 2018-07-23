@@ -11,21 +11,6 @@
 #include "world_model.h"
 #include "costmap_model.h"
 
-
-// namespace {
-// void getConfiguration(const global_planner::Node2D* node, float& x, float& y, float& t) {
-//   x = node->getX();
-//   y = node->getY();
-//   // avoid 2D collision checking
-//   t = 99;
-// }
-
-// void getConfiguration(const global_planner::Pose2D* node, float& x, float& y, float& t) {
-//   x = node->getX();
-//   y = node->getY();
-//   t = node->getT();
-// }
-// }
 /*!
    \brief The CollisionDetection class determines whether a given configuration q of the robot will result in a collision with the environment.
 
@@ -76,7 +61,7 @@ for (unsigned int i = 0; i < footprint_spec_.size(); i++)
 
     /////////////////////////////////////////
     double cost = footprintCost(x, y, theta);//YT 为正说明无碰撞，返回的是代价值，负数说明有碰撞
-    std::cout << "YT: print the footprintcost of Node2D: " << cost << " （" << x << "," << y << ")" << std::endl;
+    // std::cout << "YT: print the footprintcost of Node2D: " << cost << " （" << x << "," << y << ")" << std::endl;
     return (cost >= 0) ? true : false;
 
 
@@ -97,7 +82,7 @@ for (unsigned int i = 0; i < footprint_spec_.size(); i++)
     // return configurationTest(x, y, t);
 
     double cost = footprintCost(x, y, theta);
-    std::cout << "YT: print the footprintcost of Pose2D: " << cost << " （" << x << "," << y << ", " << theta << ")" << std::endl;
+    // std::cout << "YT: print the footprintcost of Pose2D: " << cost << " （" << x << "," << y << ", " << theta << ")" << std::endl;
     return (cost >= 0) ? true : false;
 
     // return true;

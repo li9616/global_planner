@@ -154,7 +154,7 @@ bool Algorithm::AStar::plan(global_planner::Pose2D& start_temp,
           // ensure successor is not blocked by obstacle
           // ensure successor is not on closed list
           if (isOnGrid(*nSucc, width, height) &&  configurationSpace->isTraversable(nSucc) && !nodes2D[iSucc].isClosed()) {
-            std::cout << "YT: no collision" << std::endl;
+            // std::cout << "YT: no collision" << std::endl;
             // calculate new G value
             nSucc->updateG();
             newG = nSucc->getG();
