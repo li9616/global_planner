@@ -83,14 +83,14 @@ add_library(${PROJECT_NAME}
   src/planner.cpp
   
   include/planner_core.h
-  include/world_model.h
-  include/costmap_model.h
+  include/collisiondetection/world_model.h
+  include/collisiondetection/costmap_model.h
   include/line_iterator.h
   include/algorithm/algorithm.h
   include/algorithm/AStar.h
   include/algorithm/HAStar.h
   include/algorithm/primitive.h
-  include/collisiondetection.h
+  include/collisiondetection/collisiondetection.h
   include/constants.h
   include/dynamicvoronoi.h
   include/helper.h

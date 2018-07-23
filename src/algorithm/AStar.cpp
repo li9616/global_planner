@@ -172,9 +172,9 @@ bool Algorithm::AStar::plan(global_planner::Pose2D& start_temp,
             } else { delete nSucc; }
           } 
           else { 
-            std::cout << "YT: isOnGrid(*nSucc, width, height)" << isOnGrid(*nSucc, width, height) << std::endl;
-            std::cout << "YT: configurationSpace->isTraversable(nSucc)" << configurationSpace->isTraversable(nSucc) << std::endl;
-            std::cout << "YT: !nodes2D[iSucc].isClosed" << !nodes2D[iSucc].isClosed() << std::endl;
+            // std::cout << "YT: isOnGrid(*nSucc, width, height)" << isOnGrid(*nSucc, width, height) << std::endl;
+            // std::cout << "YT: configurationSpace->isTraversable(nSucc)" << configurationSpace->isTraversable(nSucc) << std::endl;
+            // std::cout << "YT: !nodes2D[iSucc].isClosed" << !nodes2D[iSucc].isClosed() << std::endl;
             delete nSucc; }
         }
       }

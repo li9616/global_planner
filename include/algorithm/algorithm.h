@@ -10,7 +10,7 @@ typedef ompl::base::SE2StateSpace::StateType State;
 
 #include "pose2d.h"
 #include "node2d.h"
-#include "collisiondetection.h"
+#include "collisiondetection/collisiondetection.h"
 #include "algorithm/primitive.h"
 
 

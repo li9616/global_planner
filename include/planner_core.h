@@ -51,7 +51,7 @@
 #include <dynamic_reconfigure/server.h>
 #include <global_planner/GlobalPlannerConfig.h>
 #include "planner.h"
-#include "world_model.h"
+#include "collisiondetection/world_model.h"
 #include <costmap_2d/costmap_2d_ros.h>
 #include <base_local_planner/odometry_helper_ros.h>
 

@@ -3,7 +3,7 @@
 
 #include "algorithm/algorithm.h"
 #include "node2d.h"
-#include "collisiondetection.h"
+#include "collisiondetection/collisiondetection.h"
 namespace Algorithm{
 class AStar : public Algorithm
 {

@@ -8,8 +8,8 @@
 #include "lookup.h"
 #include "node2d.h"
 #include "pose2d.h"
-#include "world_model.h"
-#include "costmap_model.h"
+#include "collisiondetection/world_model.h"
+#include "collisiondetection/costmap_model.h"
 
 /*!
    \brief The CollisionDetection class determines whether a given configuration q of the robot will result in a collision with the environment.

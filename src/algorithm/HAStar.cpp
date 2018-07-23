@@ -182,7 +182,7 @@ bool Algorithm::HAStar::plan(global_planner::Pose2D& start,
                 delete nSucc;
               } else { delete nSucc; }
             } else { delete nSucc; }
-          } else { ROS_WARN("YT: the nSucc is not on grid, or it is not traversable");delete nSucc; }
+          } else { delete nSucc; }
         }
       }
     }

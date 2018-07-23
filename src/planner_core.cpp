@@ -49,7 +49,7 @@
 
 #include <base_local_planner/odometry_helper_ros.h>
 
-#include <costmap_model.h>
+#include "collisiondetection/costmap_model.h"
 
 //register this planner as a BaseGlobalPlanner plugin
 PLUGINLIB_EXPORT_CLASS(global_planner::GlobalPlanner, nav_core::BaseGlobalPlanner)

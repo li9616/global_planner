@@ -1,6 +1,6 @@
-#include "collisiondetection.h"
+#include "collisiondetection/collisiondetection.h"
 #include <costmap_2d/costmap_2d.h>
-#include "costmap_model.h"
+#include "collisiondetection/costmap_model.h"
 
 
 double CollisionDetection::footprintCost(double x_i, double y_i, double theta_i)
