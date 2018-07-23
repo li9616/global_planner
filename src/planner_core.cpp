@@ -82,6 +82,7 @@ void GlobalPlanner::initialize(std::string name, costmap_2d::Costmap2DROS* costm
         plan_pub_ = private_nh.advertise<nav_msgs::Path>("plan", 1);
         mid_result_pub_ = private_nh.advertise<geometry_msgs::PoseArray>("mid_result", 1);
         footprint_spec_pub_ = private_nh.advertise<geometry_msgs::Point>("footprint_spec_", 1);
+        generalized_voronoi_pub_ = private_nh.advertise<nav_msgs::OccupancyGrid>("generalized_voronoi_graph", 1);
 
         private_nh.param("allow_unknown", allow_unknown_, true);//YT 将地图上没有的空间都视为自由空间
         private_nh.param("default_tolerance", default_tolerance_, 0.1);
@@ -91,9 +92,21 @@ void GlobalPlanner::initialize(std::string name, costmap_2d::Costmap2DROS* costm
         //get the tf prefix
         ros::NodeHandle prefix_nh;
         tf_prefix_ = tf::getPrefixParam(prefix_nh);
+
         costmap_ros_ = costmap_ros;
         costmap_ = costmap_ros->getCostmap();
         
+        for(unsigned int i = 0; i < costmap_->getSizeInCellsX(); i++){
+            costmap_->setCost(i, 0, costmap_2d::LETHAL_OBSTACLE);
+            costmap_->setCost(i, costmap_->getSizeInCellsY() - 1, costmap_2d::LETHAL_OBSTACLE);
+        }
+        for(unsigned int i = 0; i < costmap_->getSizeInCellsY(); i++){
+            costmap_->setCost(0, i, costmap_2d::LETHAL_OBSTACLE);
+            costmap_->setCost(costmap_->getSizeInCellsX() - 1, i, costmap_2d::LETHAL_OBSTACLE);
+        }
+
+
+
         footprint_spec_ = costmap_ros->getRobotFootprint();
 
         ROS_WARN("YT: check the size of footprint_spec_ at the beginning of the global_planner: %d", footprint_spec_.size());
@@ -180,6 +193,7 @@ bool GlobalPlanner::makePlan(const geometry_msgs::PoseStamped& start, const geom
         yt_planner_->plan(start, goal, plan);
 
     publishMidResult(yt_planner_->mid_result);
+    publishGeneralizedVoronoi();
 
     for(unsigned int i = 0; i < plan.size(); i++)
     {
@@ -252,18 +266,35 @@ void GlobalPlanner::publishFootprint()
     footprint_spec_pub_.publish(footprintpath);
 }
 
-// void GlobalPlanner::clearRobotCell(const tf::Stamped<tf::Pose>& global_pose, unsigned int mx, unsigned int my) {
-//     if (!initialized_) {
-//         ROS_ERROR(
-//                 "This planner has not been initialized yet, but it is being used, please call initialize() before use");
-//         return;
-//     }
+void GlobalPlanner::publishGeneralizedVoronoi()
+{
+    if(using_voronoi_){
+        nav_msgs::OccupancyGrid map_temp;
+        map_temp.header.stamp = ros::Time::now();
+        map_temp.header.frame_id = frame_id_;
+        map_temp.info.resolution = costmap_->getResolution() / cell_divider_;
+        map_temp.info.width = costmap_->getSizeInCellsX() * cell_divider_;
+        map_temp.info.height = costmap_->getSizeInCellsY() * cell_divider_;
+        map_temp.info.origin.position.x = costmap_->getOriginX();
+        map_temp.info.origin.position.y = costmap_->getOriginY();
+        map_temp.info.origin.position.z = 0;
+        map_temp.info.origin.orientation.x = 0;
+        map_temp.info.origin.orientation.y = 0;
+        map_temp.info.origin.orientation.z = 0;
+        map_temp.info.origin.orientation.w = 1;
 
-//     //set the associated costs in the cost map to be free
-//     costmap_->setCost(mx, my, costmap_2d::FREE_SPACE);
-// }
-
-
+        unsigned char* vor_map = yt_planner_->getVoronoi()->getMapForShow();
+        std::cout << "YT: prepare to copy voronoi_graph" << std::endl;
+        map_temp.data.resize(map_temp.info.width * map_temp.info.height);
+        memcpy((void*)map_temp.data.data(), (void*)vor_map, sizeof(unsigned char) * map_temp.info.width * map_temp.info.height);
+        std::cout << "YT: copy voronoi_graph finished" << std::endl;
+        generalized_voronoi_pub_.publish(map_temp);
+    }
+    else{
+        ROS_ERROR("YT: no voronoi plugin in global_planner");
+        return;
+    }
+}
 
 
 } //end namespace global_planner

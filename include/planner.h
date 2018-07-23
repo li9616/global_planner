@@ -70,6 +70,8 @@ class Planner {
   void tracePath(const Pose2D* node, int i, std::vector<Pose2D>& path);
   
   void visualizeBinMap(const char* filename);
+  
+  DynamicVoronoi* getVoronoi();
 
   nav_msgs::Path path_;
 

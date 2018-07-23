@@ -31,6 +31,7 @@ class BucketPrioQueue {
   static int numBuckets;
   int count;
   int nextBucket;
+  unsigned char** map_for_show_;
 
   std::vector<std::queue<Eigen::Vector2d> > buckets;
 };
@@ -74,6 +75,7 @@ class DynamicVoronoi {
   //! returns the vertical size of the workspace/map
   unsigned int getSizeY() {return sizeY;}
 
+  unsigned char* getMapForShow();
   // was private, changed to public for obstX, obstY
  public:
   struct dataCell {
@@ -116,6 +118,8 @@ class DynamicVoronoi {
   int sizeX;
   dataCell** data;
   bool** gridMap;
+
+  unsigned char* map_for_show_;
 
   // parameters
   int padding;

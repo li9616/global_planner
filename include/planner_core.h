@@ -108,13 +108,14 @@ class GlobalPlanner : public nav_core::BaseGlobalPlanner {
 
         void publishFootprint();
 
-        // void clearRobotCell(const tf::Stamped<tf::Pose>& global_pose, unsigned int mx, unsigned int my);
+        void publishGeneralizedVoronoi();
+
 
     protected:
         costmap_2d::Costmap2DROS* costmap_ros_;
         costmap_2d::Costmap2D* costmap_;
         std::string frame_id_;
-        ros::Publisher plan_pub_, mid_result_pub_, footprint_spec_pub_;
+        ros::Publisher plan_pub_, mid_result_pub_, footprint_spec_pub_, generalized_voronoi_pub_;
         bool initialized_, allow_unknown_;
 
     private:
@@ -137,7 +138,7 @@ class GlobalPlanner : public nav_core::BaseGlobalPlanner {
         WorldModel* world_model_; ///< @brief The world model that the controller will use
 
         int cell_divider_; //YT 将一个网格cell_divider_等分，但是每个网格实际的大小还是要根据costmap的resolution来决定
-
+        
         bool using_voronoi_;
         bool lazy_replanning_;
 

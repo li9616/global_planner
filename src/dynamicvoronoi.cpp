@@ -62,12 +62,17 @@ void DynamicVoronoi::initializeEmpty(int _sizeX, int _sizeY, bool initGridMap) {
     for (int x=0; x<sizeX; x++) 
       for (int y=0; y<sizeY; y++) gridMap[x][y] = 0;
   }
+
+//YT 初始化map_for_show的内存，visualize函数中赋值，通过get函数访问
+  if(!map_for_show_){
+    map_for_show_ = new unsigned char[sizeX * sizeY];
+  }
 }
 
 void DynamicVoronoi::initializeMap(int _sizeX, int _sizeY, bool** _gridMap) {
   gridMap = _gridMap;
   // std::cout << "YT: _sizeX = " << _sizeX << ", _sizeY = " << _sizeY << std::endl;
-  ROS_ERROR("YT: TESTPOINT3");
+  // ROS_ERROR("YT: TESTPOINT3");
   ROS_ERROR("YT: _sizeX = %d, _sizeY = %d", _sizeX, _sizeY);
   initializeEmpty(_sizeX, _sizeY, false);
 //YT grid_map里如果是true说明是障碍物
@@ -384,15 +389,18 @@ void DynamicVoronoi::visualize(const char *filename) {
         fputc( 255, F );
         fputc( 0, F );
         fputc( 0, F );
+        *(map_for_show_ + y * sizeX + x) = 255;
       } else if (data[x][y].sqdist==0) {
         fputc( 0, F );
         fputc( 0, F );
         fputc( 0, F );
+        *(map_for_show_ + y * sizeX + x) = 0;
       } else {
         float f = 80+(data[x][y].dist*5);
         if (f>255) f=255;
         if (f<0) f=0;
         c = (unsigned char)f;
+        *(map_for_show_ + y * sizeX + x) = c;
         fputc( c, F );
         fputc( c, F );
         fputc( c, F );
@@ -402,6 +410,10 @@ void DynamicVoronoi::visualize(const char *filename) {
   fclose(F);
 }
 
+unsigned char* DynamicVoronoi::getMapForShow()
+{
+  return map_for_show_;
+}
 
 void DynamicVoronoi::prune() {
   // filler

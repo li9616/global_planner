@@ -24,7 +24,6 @@ using_voronoi_ = using_voronoi;
   cell_divider_ = cell_divider;
   ROS_WARN("YT: start creating planner");
   path_.header.frame_id = "path";
-  setupCollisionDetection(costmap);
 
 //////////////////////////YT 建立binMap/////////////////////////////////
   //YT 初始化地图数据
@@ -53,18 +52,14 @@ using_voronoi_ = using_voronoi;
   for (unsigned int x = 0; x < width; x++) 
   { binMap_[x] = new bool[height]; }
  
+  if(using_voronoi_)
+  {
+    voronoiDiagram = new DynamicVoronoi();
+    voronoiDiagram->initializeMap(gridmap_width_x_, gridmap_height_y_, binMap_);
+  }
+
   
 }
-
-//###################################################
-//                                                MAP
-//###################################################
-void global_planner::Planner::setupCollisionDetection(costmap_2d::Costmap2D* costmap) {
-
-    //YT width是x，height是y
-
-}
-
 
 
 
@@ -133,20 +128,6 @@ ROS_ERROR("YT: make plan by planner");
 void global_planner::Planner::plan(std::vector<geometry_msgs::PoseStamped>& plan) {
 
 
-
-
-  // if(using_voronoi_)
-  // {
-  //   voronoiDiagram = new DynamicVoronoi();
-  //   voronoiDiagram->initializeMap(costmap_->getSizeInCellsX(), costmap_->getSizeInCellsY(), binMap_);
-
-  //   voronoiDiagram->update();
-  //   ROS_WARN("YT: start saving voronoi graph");
-  //   voronoiDiagram->visualize();
-  //   ROS_WARN("YT: voronoi_graph has been saved");
-  // }
-
-
   //YT 更新
  for (unsigned int x = 0; x < gridmap_width_x_; ++x) {
     for (unsigned int y = 0; y < gridmap_height_y_; ++y) {
@@ -156,6 +137,21 @@ void global_planner::Planner::plan(std::vector<geometry_msgs::PoseStamped>& plan
 
 
   visualizeBinMap("/home/yangtong/binMap.ppm");
+
+
+
+
+
+
+  if(using_voronoi_)
+  {
+    voronoiDiagram->update();
+    ROS_WARN("YT: start saving voronoi graph");
+    voronoiDiagram->visualize();
+    ROS_WARN("YT: voronoi_graph has been saved");
+  }
+
+
 
 
   configurationSpace = new CollisionDetection(costmap_, cell_divider_, footprint_spec_, origin_position_x_, origin_position_y_, gridmap_resolution_);
@@ -213,16 +209,12 @@ void global_planner::Planner::plan(std::vector<geometry_msgs::PoseStamped>& plan
 
     for(unsigned int i = 0;i< yt_alg_->mid_result.size();i++)
     {
+      //YT 如果点有方向那么就按照设定方向进行显示，如果没有方向那么默认朝向(0, 0, 0, 1)
         mid_result.poses.at(i).position.x = yt_alg_->mid_result.at(i).getX() * gridmap_resolution_ + origin_position_x_;
         mid_result.poses.at(i).position.y = yt_alg_->mid_result.at(i).getY() * gridmap_resolution_ + origin_position_y_;
         tf::Quaternion q = tf::createQuaternionFromYaw(yt_alg_->mid_result.at(i).getT());
         tf::quaternionTFToMsg(q, mid_result.poses.at(i).orientation);
-        // mid_result.poses.at(i).orientation.w = 1;
     }
-
-
-
-
 
 
     ROS_ERROR("YT: yt_alg_ has finished, planner.cpp line 195");
@@ -308,6 +300,11 @@ void global_planner::Planner::tracePath(const Pose2D* node, int i, std::vector<P
   tracePath(node->getPred(), i, path);
 }
 
+DynamicVoronoi* global_planner::Planner::getVoronoi()
+{
+  return voronoiDiagram;
+}
+
 void global_planner::Planner::visualizeBinMap(const char* filename)
 {
   FILE* F = fopen(filename, "w");
@@ -316,10 +313,10 @@ void global_planner::Planner::visualizeBinMap(const char* filename)
     return;
   }
   fprintf(F, "P6\n");
-  fprintf(F, "%d %d 255\n", costmap_->getSizeInCellsX(), costmap_->getSizeInCellsY());//YT 列像素数，行像素数，中间有空格
+  fprintf(F, "%d %d 255\n", gridmap_width_x_, gridmap_height_y_);//YT 列像素数，行像素数，中间有空格
 
-  for(int y = costmap_->getSizeInCellsY()-1; y >=0; y--){      
-    for(int x = 0; x < costmap_->getSizeInCellsX(); x++){	
+  for(int y = gridmap_height_y_ - 1; y >=0; y--){      
+    for(int x = 0; x < gridmap_width_x_; x++){	
       unsigned char c = 0;
       if (binMap_[x][y] == 0) {
         fputc( 255, F );
