@@ -289,6 +289,9 @@ void GlobalPlanner::publishGeneralizedVoronoi()
         memcpy((void*)map_temp.data.data(), (void*)vor_map, sizeof(unsigned char) * map_temp.info.width * map_temp.info.height);
         std::cout << "YT: copy voronoi_graph finished" << std::endl;
         generalized_voronoi_pub_.publish(map_temp);
+        // for(unsigned int i = 0; i < map_temp.info.width * map_temp.info.height; i++){
+        //     std::cout << (unsigned int)*(vor_map+i) <<", ";
+        // }
     }
     else{
         ROS_ERROR("YT: no voronoi plugin in global_planner");

@@ -85,7 +85,8 @@ class Planner {
 
   //YT costmap相关
   costmap_2d::Costmap2D* costmap_;
-  bool** binMap_;//YT 用于存储二进制格式的地图
+  bool** binMap_;//YT 用于存储二进制格式的地图, true = free, false = occupied
+  bool** binMap_not_;//true = occupied, false = free;
   unsigned char** charMap_;//YT 用于存储八位占用率地图
 
 
@@ -104,8 +105,8 @@ class Planner {
 
 //YT gridmap相关
   unsigned int cell_divider_;
-  double gridmap_width_x_;
-  double gridmap_height_y_;
+  unsigned int gridmap_width_x_;
+  unsigned int gridmap_height_y_;
   double gridmap_resolution_;//YT todo: 删除gridmap的实例
 
 

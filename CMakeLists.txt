@@ -81,6 +81,7 @@ add_library(${PROJECT_NAME}
   src/node2d.cpp
   src/pose2d.cpp
   src/planner.cpp
+  src/bucketedqueue.cpp
   
   include/planner_core.h
   include/collisiondetection/world_model.h
@@ -93,6 +94,8 @@ add_library(${PROJECT_NAME}
   include/collisiondetection/collisiondetection.h
   include/constants.h
   include/dynamicvoronoi.h
+  include/bucketedqueue.h
+  include/point.h
   include/helper.h
   include/lookup.h
   include/node2d.h
@@ -117,6 +120,7 @@ add_executable(planner
   src/node2d.cpp
   src/pose2d.cpp
   src/planner.cpp
+  src/bucketedqueue.cpp
 )
 add_dependencies(planner ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 target_link_libraries(planner

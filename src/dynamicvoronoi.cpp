@@ -2,18 +2,13 @@
 
 #include <math.h>
 #include <iostream>
-#include <Eigen/Core>
-#include <ros/ros.h>
-
-#define MAXDIST 1000
-#define RESERVE 64
-
 
 
 DynamicVoronoi::DynamicVoronoi() {
   sqrt2 = sqrt(2.0);
   data = NULL;
   gridMap = NULL;
+  map_for_show_ = NULL;
 }
 
 DynamicVoronoi::~DynamicVoronoi() {
@@ -21,10 +16,10 @@ DynamicVoronoi::~DynamicVoronoi() {
     for (int x=0; x<sizeX; x++) delete[] data[x];
     delete[] data;
   }
-  if (gridMap) {
-    for (int x=0; x<sizeX; x++) delete[] gridMap[x];
-    delete[] gridMap;
-  }
+  // if (gridMap) {
+  //   for (int x=0; x<sizeX; x++) delete[] gridMap[x];
+  //   delete[] gridMap;
+  // }
 }
 
 void DynamicVoronoi::initializeEmpty(int _sizeX, int _sizeY, bool initGridMap) {
@@ -63,7 +58,7 @@ void DynamicVoronoi::initializeEmpty(int _sizeX, int _sizeY, bool initGridMap) {
       for (int y=0; y<sizeY; y++) gridMap[x][y] = 0;
   }
 
-//YT 初始化map_for_show的内存，visualize函数中赋值，通过get函数访问
+  //YT 初始化map_for_show的内存，visualize函数中赋值，通过get函数访问
   if(!map_for_show_){
     map_for_show_ = new unsigned char[sizeX * sizeY];
   }
@@ -71,11 +66,8 @@ void DynamicVoronoi::initializeEmpty(int _sizeX, int _sizeY, bool initGridMap) {
 
 void DynamicVoronoi::initializeMap(int _sizeX, int _sizeY, bool** _gridMap) {
   gridMap = _gridMap;
-  // std::cout << "YT: _sizeX = " << _sizeX << ", _sizeY = " << _sizeY << std::endl;
-  // ROS_ERROR("YT: TESTPOINT3");
-  ROS_ERROR("YT: _sizeX = %d, _sizeY = %d", _sizeX, _sizeY);
   initializeEmpty(_sizeX, _sizeY, false);
-//YT grid_map里如果是true说明是障碍物
+
   for (int x=0; x<sizeX; x++) {
     for (int y=0; y<sizeY; y++) {
       if (gridMap[x][y]) {
@@ -110,7 +102,6 @@ void DynamicVoronoi::initializeMap(int _sizeX, int _sizeY, bool** _gridMap) {
       }
     }
   }
-ROS_ERROR("YT: TESTPOINT2");
 }
 
 void DynamicVoronoi::occupyCell(int x, int y) {
@@ -126,7 +117,7 @@ void DynamicVoronoi::setObstacle(int x, int y) {
   dataCell c = data[x][y];
   if(isOccupied(x,y,c)) return;
   
-  addList.push_back(Eigen::Vector2d(x,y));
+  addList.push_back(INTPOINT(x,y));
   c.obstX = x;
   c.obstY = y;
   data[x][y] = c;
@@ -136,18 +127,18 @@ void DynamicVoronoi::removeObstacle(int x, int y) {
   dataCell c = data[x][y];
   if(isOccupied(x,y,c) == false) return;
 
-  removeList.push_back(Eigen::Vector2d(x,y));
+  removeList.push_back(INTPOINT(x,y));
   c.obstX = invalidObstData;
   c.obstY  = invalidObstData;    
   c.queueing = bwQueued;
   data[x][y] = c;
 }
 
-void DynamicVoronoi::exchangeObstacles(std::vector<Eigen::Vector2d> points) {
+void DynamicVoronoi::exchangeObstacles(std::vector<INTPOINT> points) {
 
   for (unsigned int i=0; i<lastObstacles.size(); i++) {
-    int x = lastObstacles[i].x();
-    int y = lastObstacles[i].y();
+    int x = lastObstacles[i].x;
+    int y = lastObstacles[i].y;
 
     bool v = gridMap[x][y];
     if (v) continue;
@@ -157,8 +148,8 @@ void DynamicVoronoi::exchangeObstacles(std::vector<Eigen::Vector2d> points) {
   lastObstacles.clear();
 
   for (unsigned int i=0; i<points.size(); i++) {
-    int x = points[i].x();
-    int y = points[i].y();
+    int x = points[i].x;
+    int y = points[i].y;
     bool v = gridMap[x][y];
     if (v) continue;
     setObstacle(x,y);
@@ -171,9 +162,9 @@ void DynamicVoronoi::update(bool updateRealDist) {
   commitAndColorize(updateRealDist);
 
   while (!open.empty()) {
-    Eigen::Vector2d p = open.pop();
-    int x = p.x();
-    int y = p.y();
+    INTPOINT p = open.pop();
+    int x = p.x;
+    int y = p.y;
     dataCell c = data[x][y];
 
     if(c.queueing==fwProcessed) continue; 
@@ -190,7 +181,7 @@ void DynamicVoronoi::update(bool updateRealDist) {
           dataCell nc = data[nx][ny];
           if (nc.obstX!=invalidObstData && !nc.needsRaise) {
             if(!isOccupied(nc.obstX,nc.obstY,data[nc.obstX][nc.obstY])) {
-              open.push(nc.sqdist, Eigen::Vector2d(nx,ny));
+              open.push(nc.sqdist, INTPOINT(nx,ny));
               nc.queueing = fwQueued;
               nc.needsRaise = true;
               nc.obstX = invalidObstData;
@@ -200,7 +191,7 @@ void DynamicVoronoi::update(bool updateRealDist) {
               data[nx][ny] = nc;
             } else {
               if(nc.queueing != fwQueued){
-                open.push(nc.sqdist, Eigen::Vector2d(nx,ny));
+                open.push(nc.sqdist, INTPOINT(nx,ny));
                 nc.queueing = fwQueued;
                 data[nx][ny] = nc;
               }
@@ -235,7 +226,7 @@ void DynamicVoronoi::update(bool updateRealDist) {
               if (nc.obstX == invalidObstData || isOccupied(nc.obstX,nc.obstY,data[nc.obstX][nc.obstY])==false) overwrite = true;
             }
             if (overwrite) {
-              open.push(newSqDistance, Eigen::Vector2d(nx,ny));
+              open.push(newSqDistance, INTPOINT(nx,ny));
               nc.queueing = fwQueued;
               if (updateRealDist) {
                 nc.dist = sqrt((double) newSqDistance);
@@ -269,9 +260,9 @@ bool DynamicVoronoi::isVoronoi( int x, int y ) {
 void DynamicVoronoi::commitAndColorize(bool updateRealDist) {
   // ADD NEW OBSTACLES
   for (unsigned int i=0; i<addList.size(); i++) {
-    Eigen::Vector2d p = addList[i];
-    int x = p.x();
-    int y = p.y();
+    INTPOINT p = addList[i];
+    int x = p.x;
+    int y = p.y;
     dataCell c = data[x][y];
 
     if(c.queueing != fwQueued){
@@ -282,19 +273,19 @@ void DynamicVoronoi::commitAndColorize(bool updateRealDist) {
       c.queueing = fwQueued;
       c.voronoi = occupied;
       data[x][y] = c;
-      open.push(0, Eigen::Vector2d(x,y));
+      open.push(0, INTPOINT(x,y));
     }
   }
 
   // REMOVE OLD OBSTACLES
   for (unsigned int i=0; i<removeList.size(); i++) {
-    Eigen::Vector2d p = removeList[i];
-    int x = p.x();
-    int y = p.y();
+    INTPOINT p = removeList[i];
+    int x = p.x;
+    int y = p.y;
     dataCell c = data[x][y];
 
     if (isOccupied(x,y,c)==true) continue; // obstacle was removed and reinserted
-    open.push(0, Eigen::Vector2d(x,y));
+    open.push(0, INTPOINT(x,y));
     if (updateRealDist) c.dist  = INFINITY;
     c.sqdist = INT_MAX;
     c.needsRaise = true;
@@ -328,14 +319,14 @@ void DynamicVoronoi::checkVoro(int x, int y, int nx, int ny, dataCell& c, dataCe
         if (c.voronoi != free) {
           c.voronoi = free;
           reviveVoroNeighbors(x,y);
-          pruneQueue.push(Eigen::Vector2d(x,y));
+          pruneQueue.push(INTPOINT(x,y));
         }
       }
       if(stability_nxy <= stability_xy && nc.sqdist>2) {
         if (nc.voronoi != free) {
           nc.voronoi = free;
           reviveVoroNeighbors(nx,ny);
-          pruneQueue.push(Eigen::Vector2d(nx,ny));
+          pruneQueue.push(INTPOINT(nx,ny));
         }
       }
     }
@@ -355,7 +346,7 @@ void DynamicVoronoi::reviveVoroNeighbors(int &x, int &y) {
       if (nc.sqdist != INT_MAX && !nc.needsRaise && (nc.voronoi == voronoiKeep || nc.voronoi == voronoiPrune)) {
         nc.voronoi = free;
         data[nx][ny] = nc;
-        pruneQueue.push(Eigen::Vector2d(nx,ny));
+        pruneQueue.push(INTPOINT(nx,ny));
       }
     }
   }
@@ -389,7 +380,7 @@ void DynamicVoronoi::visualize(const char *filename) {
         fputc( 255, F );
         fputc( 0, F );
         fputc( 0, F );
-        *(map_for_show_ + y * sizeX + x) = 255;
+        *(map_for_show_ + y * sizeX + x) = 128;
       } else if (data[x][y].sqdist==0) {
         fputc( 0, F );
         fputc( 0, F );
@@ -400,28 +391,25 @@ void DynamicVoronoi::visualize(const char *filename) {
         if (f>255) f=255;
         if (f<0) f=0;
         c = (unsigned char)f;
+        fputc( c, F );
+        fputc( c, F );
+        fputc( c, F );
         *(map_for_show_ + y * sizeX + x) = c;
-        fputc( c, F );
-        fputc( c, F );
-        fputc( c, F );
       }
     }
   }
   fclose(F);
 }
 
-unsigned char* DynamicVoronoi::getMapForShow()
-{
-  return map_for_show_;
-}
+
 
 void DynamicVoronoi::prune() {
   // filler
   while(!pruneQueue.empty()) {
-    Eigen::Vector2d p = pruneQueue.front();
+    INTPOINT p = pruneQueue.front();
     pruneQueue.pop();
-    int x = p.x();
-    int y = p.y();
+    int x = p.x;
+    int y = p.y;
 
     if (data[x][y].voronoi==occupied) continue;
     if (data[x][y].voronoi==freeQueued) continue;
@@ -449,7 +437,7 @@ void DynamicVoronoi::prune() {
       // fill to the right
       if (tr.voronoi!=occupied && br.voronoi!=occupied && data[x+2][y].voronoi!=occupied) {
         r.voronoi = freeQueued;
-        open.push(r.sqdist, Eigen::Vector2d(x+1,y));
+        open.push(r.sqdist, INTPOINT(x+1,y));
         data[x+1][y] = r;
       }
     } 
@@ -457,7 +445,7 @@ void DynamicVoronoi::prune() {
       // fill to the left
       if (tl.voronoi!=occupied && bl.voronoi!=occupied && data[x-2][y].voronoi!=occupied) {
         l.voronoi = freeQueued;
-        open.push(l.sqdist, Eigen::Vector2d(x-1,y));
+        open.push(l.sqdist, INTPOINT(x-1,y));
         data[x-1][y] = l;
       }
     } 
@@ -465,7 +453,7 @@ void DynamicVoronoi::prune() {
       // fill to the top
       if (tr.voronoi!=occupied && tl.voronoi!=occupied && data[x][y+2].voronoi!=occupied) {
         t.voronoi = freeQueued;
-        open.push(t.sqdist, Eigen::Vector2d(x,y+1));
+        open.push(t.sqdist, INTPOINT(x,y+1));
         data[x][y+1] = t;
       }
     } 
@@ -473,7 +461,7 @@ void DynamicVoronoi::prune() {
       // fill to the bottom
       if (br.voronoi!=occupied && bl.voronoi!=occupied && data[x][y-2].voronoi!=occupied) {
         b.voronoi = freeQueued;
-        open.push(b.sqdist, Eigen::Vector2d(x,y-1));
+        open.push(b.sqdist, INTPOINT(x,y-1));
         data[x][y-1] = b;
       }
     } 
@@ -481,15 +469,15 @@ void DynamicVoronoi::prune() {
 
 
   while(!open.empty()) {
-    Eigen::Vector2d p = open.pop();
-    dataCell c = data[(unsigned int)(p(0))][(unsigned int)(p(1))];
+    INTPOINT p = open.pop();
+    dataCell c = data[p.x][p.y];
     int v = c.voronoi;
     if (v!=freeQueued && v!=voronoiRetry) { // || v>free || v==voronoiPrune || v==voronoiKeep) {
       //      assert(v!=retry);
       continue;
     }
 
-    markerMatchResult r = markerMatch(p.x(),p.y());
+    markerMatchResult r = markerMatch(p.x,p.y);
     if (r==pruned) c.voronoi = voronoiPrune;
     else if (r==keep) c.voronoi = voronoiKeep;
     else { // r==retry
@@ -497,16 +485,17 @@ void DynamicVoronoi::prune() {
       //      printf("RETRY %d %d\n", x, sizeY-1-y);
       pruneQueue.push(p);
     }
-    data[(unsigned int)(p(0))][(unsigned int)(p(1))] = c;
+    data[p.x][p.y] = c;
 
     if (open.empty()) {
       while (!pruneQueue.empty()) {
-        Eigen::Vector2d p = pruneQueue.front();
+        INTPOINT p = pruneQueue.front();
         pruneQueue.pop();
-        open.push(data[(unsigned int)(p(0))][(unsigned int)(p(1))].sqdist, p);
+        open.push(data[p.x][p.y].sqdist, p);
       }
     }
   }
+  //  printf("match: %d\nnomat: %d\n", matchCount, noMatchCount);
 }
 
 
@@ -561,75 +550,4 @@ DynamicVoronoi::markerMatchResult DynamicVoronoi::markerMatch(int x, int y) {
   }
 
   return pruned;
-}
-
-
-
-std::vector<int> BucketPrioQueue::sqrIndices;
-int BucketPrioQueue::numBuckets;
-
-
-BucketPrioQueue::BucketPrioQueue() {
-  // make sure the index array is created
-  if (sqrIndices.size()==0) initSqrIndices();
-  nextBucket = INT_MAX;
-    
-  // now create the buckets
-  buckets = std::vector<std::queue<Eigen::Vector2d> >(numBuckets);
-
-  // reset element counter 
-  count = 0;
-}
-
-bool BucketPrioQueue::empty() {
-  return (count==0);
-}
-
-
-void BucketPrioQueue::push(int prio, Eigen::Vector2d t) {
-  if (prio>=(int)sqrIndices.size()) {
-    fprintf(stderr, "error: priority %d is not a valid squared distance x*x+y*y, or x>MAXDIST or y>MAXDIST.\n", prio);
-    exit(-1);
-  }
-  int id = sqrIndices[prio];
-  if (id<0) {
-    fprintf(stderr, "error: priority %d is not a valid squared distance x*x+y*y, or x>MAXDIST or y>MAXDIST.\n", prio);
-    exit(-1);
-  }
-  buckets[id].push(t);
-  //    printf("pushing %d with prio %d into %d. Next: %d\n", t.x, prio, id, nextBucket);
-  if (id<nextBucket) nextBucket = id;
-  //    printf("push new next is %d\n", nextBucket);
-  count++;
-}
-
-Eigen::Vector2d BucketPrioQueue::pop() {
-  int i;
-  assert(count>0);
-  //    printf("next: %d\n", nextBucket);
-  for (i = nextBucket; i<(int)buckets.size(); i++) {
-    if (!buckets[i].empty()) break;	
-  }
-  assert(i<(int)buckets.size());
-  nextBucket = i;
-  //    printf("pop new next %d\n", nextBucket);
-  count--;
-  Eigen::Vector2d p = buckets[i].front();
-  buckets[i].pop();
-  return p;
-}
-
-
-void BucketPrioQueue::initSqrIndices() {
-
-  sqrIndices = std::vector<int>(2*MAXDIST*MAXDIST+1, -1);
-
-  int count=0;
-  for (int x=0; x<=MAXDIST; x++) {
-    for (int y=0; y<=x; y++) {
-      int sqr = x*x+y*y;
-      sqrIndices[sqr] = count++;
-    }
-  }
-  numBuckets = count;
 }

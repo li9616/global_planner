@@ -36,12 +36,12 @@ class CollisionDetection {
     
     footprint_spec_ = footprint_spec;
 
-std::cout << "YT: printout footprint_spec_:" << std::endl;
-for (unsigned int i = 0; i < footprint_spec_.size(); i++)
-{
+// std::cout << "YT: printout footprint_spec_:" << std::endl;
+// for (unsigned int i = 0; i < footprint_spec_.size(); i++)
+// {
   
-  std::cout << "the " << i << "node: " << footprint_spec_.at(i) << std::endl;
-}
+//   std::cout << "the " << i << "node: " << footprint_spec_.at(i) << std::endl;
+// }
 
 
     world_model_ = new global_planner::CostmapModel(*costmap);

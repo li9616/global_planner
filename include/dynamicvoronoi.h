@@ -1,40 +1,13 @@
 #ifndef _DYNAMICVORONOI_H_
 #define _DYNAMICVORONOI_H_
 
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <limits.h>
 #include <queue>
 
-#include <Eigen/Core>
-
-
-class BucketPrioQueue {
-
- public:
-  //! Standard constructor
-  /** Standard constructor. When called for the first time it creates a look up table
-      that maps square distanes to bucket numbers, which might take some time...
-  */
-  BucketPrioQueue();
-  //! Checks whether the Queue is empty
-  bool empty();
-  //! push an element
-  void push(int prio, Eigen::Vector2d t);
-  //! return and pop the element with the lowest squared distance */
-  Eigen::Vector2d pop();
-
- private:
-
-  static void initSqrIndices();
-  static std::vector<int> sqrIndices;
-  static int numBuckets;
-  int count;
-  int nextBucket;
-  unsigned char** map_for_show_;
-
-  std::vector<std::queue<Eigen::Vector2d> > buckets;
-};
+#include "bucketedqueue.h"
 
 //! A DynamicVoronoi object computes and updates a distance map and Voronoi diagram.
 class DynamicVoronoi {
@@ -54,7 +27,7 @@ class DynamicVoronoi {
   //! remove an obstacle at the specified cell coordinate
   void clearCell(int x, int y);
   //! remove old dynamic obstacles and add the new ones
-  void exchangeObstacles(std::vector<Eigen::Vector2d> newObstacles);
+  void exchangeObstacles(std::vector<INTPOINT> newObstacles);
 
   //! update distance map and Voronoi diagram to reflect the changes
   void update(bool updateRealDist = true);
@@ -75,7 +48,7 @@ class DynamicVoronoi {
   //! returns the vertical size of the workspace/map
   unsigned int getSizeY() {return sizeY;}
 
-  unsigned char* getMapForShow();
+  unsigned char* getMapForShow(){return map_for_show_;}
   // was private, changed to public for obstX, obstY
  public:
   struct dataCell {
@@ -93,6 +66,8 @@ class DynamicVoronoi {
   typedef enum {invalidObstData = SHRT_MAX / 2} ObstDataState;
   typedef enum {pruned, keep, retry} markerMatchResult;
 
+
+
   // methods
   void setObstacle(int x, int y);
   void removeObstacle(int x, int y);
@@ -107,11 +82,11 @@ class DynamicVoronoi {
   // queues
 
   BucketPrioQueue open;
-  std::queue<Eigen::Vector2d> pruneQueue;
+  std::queue<INTPOINT> pruneQueue;
 
-  std::vector<Eigen::Vector2d> removeList;
-  std::vector<Eigen::Vector2d> addList;
-  std::vector<Eigen::Vector2d> lastObstacles;
+  std::vector<INTPOINT> removeList;
+  std::vector<INTPOINT> addList;
+  std::vector<INTPOINT> lastObstacles;
 
   // maps
   int sizeY;
@@ -120,14 +95,15 @@ class DynamicVoronoi {
   bool** gridMap;
 
   unsigned char* map_for_show_;
-
   // parameters
   int padding;
   double doubleThreshold;
 
   double sqrt2;
 
+  // dataCell** getData(){ return data; }
 };
+
 
 #endif
 

@@ -48,20 +48,26 @@ using_voronoi_ = using_voronoi;
   unsigned int width = gridmap_width_x_;
 
   binMap_ = new bool*[width];
+  binMap_not_ = new bool*[width];
 
   for (unsigned int x = 0; x < width; x++) 
-  { binMap_[x] = new bool[height]; }
+  { binMap_[x] = new bool[height]; binMap_not_[x] = new bool[height];}
  
-  if(using_voronoi_)
-  {
-    voronoiDiagram = new DynamicVoronoi();
-    voronoiDiagram->initializeMap(gridmap_width_x_, gridmap_height_y_, binMap_);
-  }
+  // if(using_voronoi_)
+  // {
 
-  
+  //    for (unsigned int x = 0; x < gridmap_width_x_; ++x) {
+  //       for (unsigned int y = 0; y < gridmap_height_y_; ++y) {
+  //     //YT 如果是true说明是FREE， false是障碍物
+  //         binMap_[x][y] = (*(costmap_->getCharMap() + (unsigned int)(y/cell_divider_) * costmap_->getSizeInCellsX() + (unsigned int)(x/cell_divider_)) == 0) ? true : false;
+  //         binMap_not_[x][y] = !binMap_[x][y];
+  //       }
+  //     }
+
+
+  // }
+
 }
-
-
 
 
 //###################################################
@@ -131,20 +137,20 @@ void global_planner::Planner::plan(std::vector<geometry_msgs::PoseStamped>& plan
   //YT 更新
  for (unsigned int x = 0; x < gridmap_width_x_; ++x) {
     for (unsigned int y = 0; y < gridmap_height_y_; ++y) {
+      //YT 如果是true说明是FREE， false是障碍物
        binMap_[x][y] = (*(costmap_->getCharMap() + (unsigned int)(y/cell_divider_) * costmap_->getSizeInCellsX() + (unsigned int)(x/cell_divider_)) == 0) ? true : false;
+       binMap_not_[x][y] = !binMap_[x][y];
     }
   }
-
+std::cout << "YT: 3" << std::endl;
 
   visualizeBinMap("/home/yangtong/binMap.ppm");
-
-
-
-
-
+std::cout << "YT: 4" << std::endl;
 
   if(using_voronoi_)
   {
+    voronoiDiagram = new DynamicVoronoi();
+    voronoiDiagram->initializeMap(gridmap_width_x_, gridmap_height_y_, binMap_not_);
     voronoiDiagram->update();
     ROS_WARN("YT: start saving voronoi graph");
     voronoiDiagram->visualize();
@@ -283,7 +289,11 @@ void global_planner::Planner::plan(std::vector<geometry_msgs::PoseStamped>& plan
     }
 
 //////////////////////////////////////////////////////////////////////////
-
+std::cout << "YT: 1" <<std::endl;
+if(using_voronoi_){
+  delete voronoiDiagram;
+}
+std::cout << "YT: 2" << std::endl;
     delete [] nodes3D;
     delete [] nodes2D;
 
@@ -314,11 +324,11 @@ void global_planner::Planner::visualizeBinMap(const char* filename)
   }
   fprintf(F, "P6\n");
   fprintf(F, "%d %d 255\n", gridmap_width_x_, gridmap_height_y_);//YT 列像素数，行像素数，中间有空格
-
+  std::cout << "gridmap_width_x_" << gridmap_width_x_ << ", gridmap_height_y_" << gridmap_height_y_ << std::endl;
   for(int y = gridmap_height_y_ - 1; y >=0; y--){      
     for(int x = 0; x < gridmap_width_x_; x++){	
       unsigned char c = 0;
-      if (binMap_[x][y] == 0) {
+      if (binMap_[x][y] == 0) {//YT 障碍物是红色，外边框是红色
         fputc( 255, F );
         fputc( 0, F );
         fputc( 0, F );
