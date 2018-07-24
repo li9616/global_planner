@@ -142,23 +142,20 @@ void global_planner::Planner::plan(std::vector<geometry_msgs::PoseStamped>& plan
        binMap_not_[x][y] = !binMap_[x][y];
     }
   }
-std::cout << "YT: 3" << std::endl;
 
   visualizeBinMap("/home/yangtong/binMap.ppm");
-std::cout << "YT: 4" << std::endl;
 
   if(using_voronoi_)
   {
     voronoiDiagram = new DynamicVoronoi();
     voronoiDiagram->initializeMap(gridmap_width_x_, gridmap_height_y_, binMap_not_);
     voronoiDiagram->update();
-    ROS_WARN("YT: start saving voronoi graph");
+    // ROS_WARN("YT: start saving voronoi graph");
+    std::cout << "YT: start saving voronoi graph ...";
     voronoiDiagram->visualize();
-    ROS_WARN("YT: voronoi_graph has been saved");
+    // ROS_WARN("YT: voronoi_graph has been saved");
+    std::cout << "end!" << std::endl;
   }
-
-
-
 
   configurationSpace = new CollisionDetection(costmap_, cell_divider_, footprint_spec_, origin_position_x_, origin_position_y_, gridmap_resolution_);
 
@@ -223,7 +220,7 @@ std::cout << "YT: 4" << std::endl;
     }
 
 
-    ROS_ERROR("YT: yt_alg_ has finished, planner.cpp line 195");
+    // ROS_ERROR("YT: yt_alg_ has finished, planner.cpp line 195");
     if(result_path.size() == 0)
     {
       std::cout << "YT: no result_path" << std::endl;
@@ -289,11 +286,11 @@ std::cout << "YT: 4" << std::endl;
     }
 
 //////////////////////////////////////////////////////////////////////////
-std::cout << "YT: 1" <<std::endl;
+// std::cout << "YT: 1" <<std::endl;
 if(using_voronoi_){
   delete voronoiDiagram;
 }
-std::cout << "YT: 2" << std::endl;
+// std::cout << "YT: 2" << std::endl;
     delete [] nodes3D;
     delete [] nodes2D;
 

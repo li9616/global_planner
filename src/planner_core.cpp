@@ -83,6 +83,8 @@ void GlobalPlanner::initialize(std::string name, costmap_2d::Costmap2DROS* costm
         mid_result_pub_ = private_nh.advertise<geometry_msgs::PoseArray>("mid_result", 1);
         footprint_spec_pub_ = private_nh.advertise<geometry_msgs::Point>("footprint_spec_", 1);
         generalized_voronoi_pub_ = private_nh.advertise<nav_msgs::OccupancyGrid>("generalized_voronoi_graph", 1);
+        
+
 
         private_nh.param("allow_unknown", allow_unknown_, true);//YT 将地图上没有的空间都视为自由空间
         private_nh.param("default_tolerance", default_tolerance_, 0.1);
@@ -105,12 +107,9 @@ void GlobalPlanner::initialize(std::string name, costmap_2d::Costmap2DROS* costm
             costmap_->setCost(costmap_->getSizeInCellsX() - 1, i, costmap_2d::LETHAL_OBSTACLE);
         }
 
-
-
         footprint_spec_ = costmap_ros->getRobotFootprint();
 
         ROS_WARN("YT: check the size of footprint_spec_ at the beginning of the global_planner: %d", footprint_spec_.size());
-
 
         yt_planner_ = new global_planner::Planner(costmap_, footprint_spec_, cell_divider_, using_voronoi_, lazy_replanning_);
 

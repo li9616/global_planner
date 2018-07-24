@@ -16,10 +16,6 @@ DynamicVoronoi::~DynamicVoronoi() {
     for (int x=0; x<sizeX; x++) delete[] data[x];
     delete[] data;
   }
-  // if (gridMap) {
-  //   for (int x=0; x<sizeX; x++) delete[] gridMap[x];
-  //   delete[] gridMap;
-  // }
 }
 
 void DynamicVoronoi::initializeEmpty(int _sizeX, int _sizeY, bool initGridMap) {

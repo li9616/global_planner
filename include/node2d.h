@@ -96,6 +96,8 @@ class Node2D {
   /// Possible movements in the y direction
   static const int dy[];
 
+  double before_rot_, after_rot_;//YT [-PI, PI]
+
  private:
   /// the x position
   int x;

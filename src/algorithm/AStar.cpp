@@ -140,20 +140,30 @@ bool Algorithm::AStar::plan(global_planner::Pose2D& start_temp,
           // create possible successor
           nSucc = nPred->createSuccessor(i);
 
-          //YT 保存中间结果
+          nPred->after_rot_ = global_planner::Helper::normalizeHeadingRad(atan2((nSucc->getY() - nPred->getY()), (nSucc->getX() - nPred->getX())));
+          nSucc->before_rot_ =global_planner::Helper::normalizeHeadingRad(atan2((nSucc->getY() - nPred->getY()), (nSucc->getX() - nPred->getX())));
+           
+
+          //YT save mid_result//////////////////
           global_planner::Pose2D temp;
           temp.setX(nSucc->getX());
           temp.setY(nSucc->getY());
-          temp.setT(atan2((nSucc->getY() - nPred->getY()), (nSucc->getX() - nPred->getX())));
+          temp.setT(global_planner::Helper::normalizeHeadingRad(atan2((nSucc->getY() - nPred->getY()), (nSucc->getX() - nPred->getX()))) );//YT orientation before rotation
           mid_result.push_back(temp);
+          ////////////////////////////////
 
           // set index of the successor
           iSucc = nSucc->setIdx(width);
 
+
+          // YT: ensure the rotation at nPred is valid
+          // YT: ensure the movement between nPred and nSucc is valid
           // ensure successor is on grid ROW MAJOR
-          // ensure successor is not blocked by obstacle
           // ensure successor is not on closed list
-          if (isOnGrid(*nSucc, width, height) &&  configurationSpace->isTraversable(nSucc) && !nodes2D[iSucc].isClosed()) {
+          if (configurationSpace->isTraversableForRotation(nPred) &&
+              configurationSpace->isTraversableForMovement(nPred, nSucc) &&
+              isOnGrid(*nSucc, width, height) &&
+              !nodes2D[iSucc].isClosed()) {
             // std::cout << "YT: no collision" << std::endl;
             // calculate new G value
             nSucc->updateG();

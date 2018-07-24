@@ -1,6 +1,7 @@
 #ifndef COLLISIONDETECTION_H
 #define COLLISIONDETECTION_H
 
+#include <cmath>
 #include <nav_msgs/OccupancyGrid.h>
 #include <costmap_2d/costmap_2d.h>
 #include <geometry_msgs/Point.h>
@@ -35,18 +36,58 @@ class CollisionDetection {
     HybridAStar::Lookup::collisionLookup(collisionLookup);
     
     footprint_spec_ = footprint_spec;
-
-// std::cout << "YT: printout footprint_spec_:" << std::endl;
-// for (unsigned int i = 0; i < footprint_spec_.size(); i++)
-// {
-  
-//   std::cout << "the " << i << "node: " << footprint_spec_.at(i) << std::endl;
-// }
-
-
     world_model_ = new global_planner::CostmapModel(*costmap);
 
   }
+
+  bool isTraversableForRotation(const global_planner::Node2D* node)
+  {
+    const unsigned char divider = 2;
+    float x, y, theta;
+    double cost;
+    if(global_planner::Helper::normalizeHeadingRad(node->after_rot_ - node->before_rot_) < M_PI){
+      //YT before_rot_ should increase to check
+      x = node->getX() * gridmap_resolution_ + origin_position_x_;
+      y = node->getY() * gridmap_resolution_ + origin_position_y_;
+      for(unsigned int i = 0; i <= divider; i++){
+        theta = (node->before_rot_ * i + node->after_rot_ * (divider - i)) / divider;
+        cost = footprintCost(x, y, theta);
+        if(cost < 0)return false;
+      }
+      return true;
+    }else{
+      //YT before_rot_ should decrease to check
+      x = node->getX() * gridmap_resolution_ + origin_position_x_;
+      y = node->getY() * gridmap_resolution_ + origin_position_y_;
+      for(unsigned int i = 0; i <= divider; i++){
+        theta = (node->before_rot_ * i + (node->after_rot_ - 2 * M_PI) * (divider - i)) / divider;
+        cost = footprintCost(x, y, theta);
+        if(cost < 0)return false;
+      }
+      return true;    
+    }
+  }
+  // bool isTraversableForRotation(const global_planner::Pose2D* pose)
+  // {
+  //   const unsigned char divider = 2;
+  //   float x, y, theta;
+
+  // }
+
+  bool isTraversableForMovement(const global_planner::Node2D* start, const global_planner::Node2D* goal){
+    const unsigned char divider = 2;
+    float x, y, theta;
+    double cost;
+    for (unsigned int i = 0 ; i <= divider ; i++ ){
+      x = (start->getX() * i + goal->getX() * (divider - i)) / divider * gridmap_resolution_ + origin_position_x_;
+      y = (start->getY() * i + goal->getY() * (divider - i)) / divider * gridmap_resolution_ + origin_position_y_;
+      theta = atan2((goal->getY() - start->getY()), (goal->getX() - start->getX()));
+      cost = footprintCost(x, y, theta);
+      if(cost < 0) return false;
+    }
+    return true;
+  }
+
 
 
   bool isTraversable(const global_planner::Node2D* node)
@@ -55,37 +96,23 @@ class CollisionDetection {
     float x = node->getX() * gridmap_resolution_ + origin_position_x_;
     float y = node->getY() * gridmap_resolution_ + origin_position_y_;
     float theta = 0;
-    /////////////////////////////////////////
-
-
-
-    /////////////////////////////////////////
+ 
     double cost = footprintCost(x, y, theta);//YT 为正说明无碰撞，返回的是代价值，负数说明有碰撞
     // std::cout << "YT: print the footprintcost of Node2D: " << cost << " （" << x << "," << y << ")" << std::endl;
     return (cost >= 0) ? true : false;
 
-
-    // return true;
   }
 
   bool isTraversable(const global_planner::Pose2D* pose)
   {
     float x = pose->getX() * gridmap_resolution_ + origin_position_x_;
     float y = pose->getY() * gridmap_resolution_ + origin_position_y_;
-    float theta = 0;
-
-    // float x;
-    // float y;
-    // float t;
-    // getConfiguration(pose, x, y, t);
-
-    // return configurationTest(x, y, t);
+    float theta = pose->getT();
 
     double cost = footprintCost(x, y, theta);
     // std::cout << "YT: print the footprintcost of Pose2D: " << cost << " （" << x << "," << y << ", " << theta << ")" << std::endl;
     return (cost >= 0) ? true : false;
 
-    // return true;
   }
 
   /*!

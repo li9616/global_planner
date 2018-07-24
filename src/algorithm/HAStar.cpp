@@ -61,7 +61,7 @@ bool Algorithm::HAStar::plan(global_planner::Pose2D& start,
   float newG;
   // Number of possible directions, 3 for forward driving and an additional 3 for reversing
   // int dir = Constants::reverse ? 6 : 3;
-  int dir = 3;
+  int dir = 4;
   // Number of iterations the algorithm has run for stopping based on Constants::iterations
   int iterations = 0;
 
@@ -96,9 +96,6 @@ bool Algorithm::HAStar::plan(global_planner::Pose2D& start,
     // set index
     iPred = nPred->setIdx(width, height);
     
-    
-    // std::cout<<"YT: iPred is " << iPred <<std::endl;
-    
     iterations++;
 
     // _____________________________
@@ -120,7 +117,7 @@ bool Algorithm::HAStar::plan(global_planner::Pose2D& start,
 
       // _________
       // GOAL TEST
-      if (*nPred == goal || iterations > global_planner::Constants::iterations) {
+      if ((nPred->getX() == goal.getX() && nPred->getY() == goal.getY()) || iterations > global_planner::Constants::iterations) {
         std::cout<<"nPred == goal"<<(*nPred == goal)<< "or iterations > constants::iterations"<<(iterations>global_planner::Constants::iterations)<<std::endl;
         // DEBUG
 	      std::cout<<"x= "<<nPred->getX()<<", y= "<<nPred->getY()<<std::endl;
