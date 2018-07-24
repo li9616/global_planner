@@ -44,7 +44,7 @@
 #include <geometry_msgs/PoseWithCovarianceStamped.h>
 #include <geometry_msgs/PoseArray.h>
 #include <geometry_msgs/Point.h>
-
+#include <visualization_msgs/Marker.h>
 #include <planner.h>
 
 #include <base_local_planner/odometry_helper_ros.h>
@@ -83,7 +83,7 @@ void GlobalPlanner::initialize(std::string name, costmap_2d::Costmap2DROS* costm
         mid_result_pub_ = private_nh.advertise<geometry_msgs::PoseArray>("mid_result", 1);
         footprint_spec_pub_ = private_nh.advertise<geometry_msgs::Point>("footprint_spec_", 1);
         generalized_voronoi_pub_ = private_nh.advertise<nav_msgs::OccupancyGrid>("generalized_voronoi_graph", 1);
-        
+        carpose_pub_ = private_nh.advertise<visualization_msgs::Marker>("carpose",1);
 
 
         private_nh.param("allow_unknown", allow_unknown_, true);//YT 将地图上没有的空间都视为自由空间
@@ -216,19 +216,58 @@ void GlobalPlanner::publishPlan(const std::vector<geometry_msgs::PoseStamped>& p
 
     //create a message for the plan
     nav_msgs::Path gui_path;
+    visualization_msgs::Marker carpose;
+
     gui_path.poses.resize(path.size());
+
+    //YT clear the marker
+    carpose.header.stamp = ros::Time::now();
+    carpose.header.frame_id = frame_id_;
+    carpose.ns = "car_pose";
+    carpose.id = 0;
+    carpose.type = visualization_msgs::Marker::LINE_LIST;
+    carpose.action = 3;
+    carpose.scale.x = 0.02;
+    carpose.color.r = 1;
+    carpose.color.a = 0.5;
+    carpose_pub_.publish(carpose);
 
     if (!path.empty()) {
         gui_path.header.frame_id = path[0].header.frame_id;
         gui_path.header.stamp = path[0].header.stamp;
     }
 
+    carpose.points.resize(path.size() * footprint_spec_.size() * 2);
     // Extract the plan in world co-ordinates, we assume the path is all in the same frame
+    float angle;
+    for (unsigned int i = 0; i < path.size(); i++) {
+    
+        if(i != path.size() - 1){
+            angle = //global_planner::Helper::normalizeHeadingRad(
+                    atan2(path.at(i+1).pose.position.y - path.at(i).pose.position.y, path.at(i+1).pose.position.x - path.at(i).pose.position.x);
+                    // std::cout << "angle(" << i << ") = " << angle << std::endl;
+        }
+
+        for( unsigned int j = 0; j < footprint_spec_.size(); j++){
+            int k = j + 1;
+            if(k == footprint_spec_.size()) {
+                k = 0;}
+                // std::cout << "path.at(i).pose.position.x: " << path.at(i).pose.position.x << "footprint_spec_.at(j).x * cos(angle)" <<  footprint_spec_.at(j).x * cos(angle)
+        carpose.points.at(i*footprint_spec_.size() * 2 + j * 2).x = path.at(i).pose.position.x + footprint_spec_.at(j).x * cos(angle) - footprint_spec_.at(j).y * sin(angle);
+        carpose.points.at(i*footprint_spec_.size() * 2 + j * 2).y = path.at(i).pose.position.y + footprint_spec_.at(j).y * cos(angle) + footprint_spec_.at(j).x * sin(angle);
+        carpose.points.at(i*footprint_spec_.size() * 2 + j * 2 + 1).x = path.at(i).pose.position.x + footprint_spec_.at(k).x * cos(angle) - footprint_spec_.at(k).y * sin(angle);
+        carpose.points.at(i*footprint_spec_.size() * 2 + j * 2 + 1).y = path.at(i).pose.position.y + footprint_spec_.at(k).y * cos(angle) + footprint_spec_.at(k).x * sin(angle);
+        
+        }
+    }
+
     for (unsigned int i = 0; i < path.size(); i++) {
         gui_path.poses[i] = path[i];
     }
 
     plan_pub_.publish(gui_path);
+    carpose.action = 0;
+    carpose_pub_.publish(carpose);
 }
 
 void GlobalPlanner::publishMidResult(geometry_msgs::PoseArray& mid_result){

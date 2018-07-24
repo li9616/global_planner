@@ -26,6 +26,7 @@ find_package(catkin REQUIRED
     roscpp
     tf
     base_local_planner
+    visualization_msgs
 )
 
 generate_dynamic_reconfigure_options(
