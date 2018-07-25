@@ -75,7 +75,7 @@ class Planner {
 
   nav_msgs::Path path_;
 
-  geometry_msgs::PoseArray mid_result;
+  geometry_msgs::PoseArray mid_result, vor_path_result;
  private:
 
   geometry_msgs::PoseStamped start;
@@ -112,7 +112,7 @@ class Planner {
 
 
 
-  Algorithm::Algorithm* yt_alg_;
+  yt::Algorithm *yt_alg_, *yt_alg_1;
   
   //YT 碰撞检测plugin相关
   CollisionDetection* configurationSpace;

@@ -51,12 +51,14 @@ catkin_package(
 
 
 ## OPEN MOTION PLANNING LIBRARY
-find_package(OMPL REQUIRED)
+# find_package(OMPL REQUIRED)
 
-if(NOT OMPL_FOUND)
-    message(AUTHOR_WARNING,"Open Motion Planning Library not found")
-endif(NOT OMPL_FOUND)
+# if(NOT OMPL_FOUND)
+#     message(AUTHOR_WARNING,"Open Motion Planning Library not found")
+# endif(NOT OMPL_FOUND)
 
+find_package(PkgConfig REQUIRED)
+pkg_check_modules(FLANN REQUIRED flann)
 
 include_directories(
   include
@@ -77,6 +79,7 @@ add_library(${PROJECT_NAME}
   src/algorithm/AStar.cpp
   src/algorithm/HAStar.cpp
   src/algorithm/primitive.cpp
+  src/algorithm/Voronoi.cpp
   src/collisiondetection/collisiondetection.cpp
   src/dynamicvoronoi.cpp
   src/node2d.cpp
@@ -92,6 +95,7 @@ add_library(${PROJECT_NAME}
   include/algorithm/AStar.h
   include/algorithm/HAStar.h
   include/algorithm/primitive.h
+  include/algorithm/Voronoi.h
   include/collisiondetection/collisiondetection.h
   include/constants.h
   include/dynamicvoronoi.h
@@ -105,8 +109,8 @@ add_library(${PROJECT_NAME}
 
 )
 add_dependencies(${PROJECT_NAME} ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
-target_link_libraries(${PROJECT_NAME} ${catkin_LIBRARIES})
-target_link_libraries(${PROJECT_NAME} ${OMPL_LIBRARIES})
+target_link_libraries(${PROJECT_NAME} ${catkin_LIBRARIES} ${FLANN_LIBRARIES})
+# target_link_libraries(${PROJECT_NAME} ${OMPL_LIBRARIES})
 
 
 add_executable(planner
@@ -116,6 +120,7 @@ add_executable(planner
   src/algorithm/AStar.cpp
   src/algorithm/HAStar.cpp
   src/algorithm/primitive.cpp
+  src/algorithm/Voronoi.cpp
   src/collisiondetection/collisiondetection.cpp
   src/dynamicvoronoi.cpp
   src/node2d.cpp

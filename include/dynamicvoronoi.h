@@ -6,7 +6,7 @@
 #include <stdio.h>
 #include <limits.h>
 #include <queue>
-
+#include <flann/flann.hpp>
 #include "bucketedqueue.h"
 
 //! A DynamicVoronoi object computes and updates a distance map and Voronoi diagram.
@@ -48,6 +48,7 @@ class DynamicVoronoi {
   //! returns the vertical size of the workspace/map
   unsigned int getSizeY() {return sizeY;}
 
+  // bool** get_Map_in_voronoi(){return gridMap;}
   unsigned char* getMapForShow(){return map_for_show_;}
   // was private, changed to public for obstX, obstY
  public:
@@ -80,7 +81,6 @@ class DynamicVoronoi {
   inline markerMatchResult markerMatch(int x, int y);
 
   // queues
-
   BucketPrioQueue open;
   std::queue<INTPOINT> pruneQueue;
 
@@ -102,6 +102,8 @@ class DynamicVoronoi {
   double sqrt2;
 
   // dataCell** getData(){ return data; }
+
+
 };
 
 

@@ -1,6 +1,7 @@
 #ifndef _PRIMITIVE_
 #define _PRIMITIVE_
-namespace Algorithm{
+
+namespace yt{
 
 class primitive{
 

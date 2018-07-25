@@ -4,6 +4,7 @@
 #include <nav_msgs/Path.h>
 #include "algorithm/HAStar.h"
 #include "algorithm/AStar.h"
+#include "algorithm/Voronoi.h"
 #include "tf/transform_datatypes.h"
 
 using namespace HybridAStar;
@@ -20,7 +21,7 @@ global_planner::Planner::Planner(costmap_2d::Costmap2D* costmap,
 {
 
 
-using_voronoi_ = using_voronoi;
+  using_voronoi_ = using_voronoi;
   cell_divider_ = cell_divider;
   ROS_WARN("YT: start creating planner");
   path_.header.frame_id = "path";
@@ -150,6 +151,7 @@ void global_planner::Planner::plan(std::vector<geometry_msgs::PoseStamped>& plan
     voronoiDiagram = new DynamicVoronoi();
     voronoiDiagram->initializeMap(gridmap_width_x_, gridmap_height_y_, binMap_not_);
     voronoiDiagram->update();
+    voronoiDiagram->prune();
     // ROS_WARN("YT: start saving voronoi graph");
     std::cout << "YT: start saving voronoi graph ...";
     voronoiDiagram->visualize();
@@ -199,15 +201,21 @@ void global_planner::Planner::plan(std::vector<geometry_msgs::PoseStamped>& plan
     // CLEAR THE PATH
     path_.poses.clear();
 
-    yt_alg_ = new Algorithm::AStar();
-    std::vector<Pose2D> result_path;
+    yt_alg_ = new yt::AStar();
+    yt_alg_1 = new yt::Voronoi(using_voronoi_);
+    
+    std::vector<Pose2D> result_path,result_path_1;
     result_path.clear();
+    result_path_1.clear();
 
     //YT nStart和nGoal都是以gridmap原点为原点、gridmap分辨率为单位1的坐标点，生成的结果也是基于gridmap的
     //YT 只将CollisionDetection的指针传进去，实际上CollisionDetection是建立在global_planner下的，而不是在algorithm类中
-    yt_alg_->plan(nStart, nGoal, nodes3D, nodes2D, width, height, configurationSpace, result_path);
-    //YT 保存中间结果
+    yt_alg_->plan(nStart, nGoal, nodes3D, nodes2D, width, height, configurationSpace, voronoiDiagram, result_path);
+    yt_alg_1->plan(nStart, nGoal, nodes3D, nodes2D, width, height, configurationSpace, voronoiDiagram, result_path_1);
+    
 
+
+////////////////保存结果/////////////////////////////////////////////////////////////
     mid_result.poses.resize(yt_alg_->mid_result.size());
 
     for(unsigned int i = 0;i< yt_alg_->mid_result.size();i++)
@@ -218,8 +226,7 @@ void global_planner::Planner::plan(std::vector<geometry_msgs::PoseStamped>& plan
         tf::Quaternion q = tf::createQuaternionFromYaw(yt_alg_->mid_result.at(i).getT());
         tf::quaternionTFToMsg(q, mid_result.poses.at(i).orientation);
     }
-
-
+/////////////////////////////////////////////
     // ROS_ERROR("YT: yt_alg_ has finished, planner.cpp line 195");
     if(result_path.size() == 0)
     {
@@ -227,9 +234,7 @@ void global_planner::Planner::plan(std::vector<geometry_msgs::PoseStamped>& plan
       
       return;
     }
-
-    // CREATE THE UPDATED PATH
-
+    //YT 转成PoseStamped
     path_.header.stamp = ros::Time::now();
    
     for (unsigned int i = 0; i < result_path.size(); ++i) {
@@ -247,9 +252,6 @@ void global_planner::Planner::plan(std::vector<geometry_msgs::PoseStamped>& plan
         path_.poses.at(i).pose.position.x = path_.poses.at(i).pose.position.x * gridmap_resolution_ + origin_position_x_;
         path_.poses.at(i).pose.position.y = path_.poses.at(i).pose.position.y * gridmap_resolution_ + origin_position_y_;
     }
-
-///////////////////////////////////////////////////////////////////////////
-
 
        //YT 将路径反转，再添加起终点
     if(path_.poses.size() != 0)
@@ -286,11 +288,11 @@ void global_planner::Planner::plan(std::vector<geometry_msgs::PoseStamped>& plan
     }
 
 //////////////////////////////////////////////////////////////////////////
-// std::cout << "YT: 1" <<std::endl;
+
 if(using_voronoi_){
   delete voronoiDiagram;
 }
-// std::cout << "YT: 2" << std::endl;
+
     delete [] nodes3D;
     delete [] nodes2D;
 

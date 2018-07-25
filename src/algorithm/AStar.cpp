@@ -7,7 +7,7 @@
 #include <Eigen/Dense>
 #include <boost/heap/binomial_heap.hpp>
 
-using namespace Algorithm;
+using namespace yt;
 
 void tracePath(const global_planner::Node2D* node, int i, std::vector<global_planner::Pose2D>& path);
 
@@ -33,13 +33,14 @@ bool isOnGrid(const global_planner::Node2D node, const int width, const int heig
 //###################################################
 //                                        2D A*
 //###################################################
-bool Algorithm::AStar::plan(global_planner::Pose2D& start_temp, 
+bool yt::AStar::plan(global_planner::Pose2D& start_temp, 
                     const global_planner::Pose2D& goal_temp, 
                     global_planner::Pose2D* nodes3D_temp, 
                     global_planner::Node2D* nodes2D, 
                     int width, 
                     int height, 
                     CollisionDetection* configurationSpace, 
+                    DynamicVoronoi* voronoiDiagram, 
                     std::vector<global_planner::Pose2D>& plan){
 
   ////////////////////////////////////
@@ -195,7 +196,7 @@ bool Algorithm::AStar::plan(global_planner::Pose2D& start_temp,
 }
 
 void tracePath(const global_planner::Node2D* node, int i, std::vector<global_planner::Pose2D>& path)
-{
+{//YT still in gridmap frame
     if (node == nullptr) {
       // std::cout << "YT: maybe no path to trace" << std::endl;
     return;

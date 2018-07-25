@@ -5,7 +5,7 @@
 #include <Eigen/Dense>
 #include <boost/heap/binomial_heap.hpp>
 
-using namespace Algorithm;
+using namespace yt;
 
 void tracePath(const global_planner::Pose2D* node, int i, std::vector<global_planner::Pose2D>& path);
 
@@ -45,13 +45,14 @@ bool isOnGrid(const global_planner::Pose2D pose, const int width, const int heig
 
 //////////////////////////////////////////
 
-bool Algorithm::HAStar::plan(global_planner::Pose2D& start,
+bool yt::HAStar::plan(global_planner::Pose2D& start,
                                const global_planner::Pose2D& goal,
                                global_planner::Pose2D* nodes3D,
                                global_planner::Node2D* nodes2D,
                                int width,
                                int height,
-                               CollisionDetection* configurationSpace,
+                               CollisionDetection* configurationSpace, 
+                               DynamicVoronoi* voronoiDiagram,
                                std::vector<global_planner::Pose2D>& plan) {
 
 //////////////////////////////////////////

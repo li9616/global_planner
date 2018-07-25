@@ -12,9 +12,10 @@ typedef ompl::base::SE2StateSpace::StateType State;
 #include "node2d.h"
 #include "collisiondetection/collisiondetection.h"
 #include "algorithm/primitive.h"
+#include "dynamicvoronoi.h"
 
 
-namespace Algorithm {
+namespace yt {
 
 /*!
  * \brief A class that encompasses the functions central to the search.
@@ -45,6 +46,7 @@ class Algorithm {
                     int width, 
                     int height, 
                     CollisionDetection* configurationSpace, 
+                    DynamicVoronoi* voronoiDiagram,
                     std::vector<global_planner::Pose2D>& plan) = 0;
   //  virtual bool updateH(global_planner::Pose2D& start, const global_planner::Pose2D& goal, global_planner::Node2D* nodes2D, int width, int height, HybridAStar::CollisionDetection& configurationSpace);
 

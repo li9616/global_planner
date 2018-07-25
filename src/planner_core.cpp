@@ -49,6 +49,8 @@
 
 #include <base_local_planner/odometry_helper_ros.h>
 
+#include <flann/flann.hpp>
+
 #include "collisiondetection/costmap_model.h"
 
 //register this planner as a BaseGlobalPlanner plugin
