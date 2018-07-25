@@ -76,7 +76,7 @@ class GlobalPlanner : public nav_core::BaseGlobalPlanner {
         /**
          * @brief  Default deconstructor for the PlannerCore object
          */
-        ~GlobalPlanner(){}
+        ~GlobalPlanner();
 
         /**
          * @brief  Initialization function for the PlannerCore object

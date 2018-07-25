@@ -91,7 +91,7 @@ void GlobalPlanner::initialize(std::string name, costmap_2d::Costmap2DROS* costm
         private_nh.param("allow_unknown", allow_unknown_, true);//YT 将地图上没有的空间都视为自由空间
         private_nh.param("default_tolerance", default_tolerance_, 0.1);
         private_nh.param("cell_divider", cell_divider_, 1);
-        private_nh.param("using_voronoi", using_voronoi_, true);
+        private_nh.param("using_voronoi", using_voronoi_, false);
         private_nh.param("lazy_replanning", lazy_replanning_, false);//YT 如果启动lazy_replanning那么只有当障碍物被挡住时才会启动重新规划路径，可以应对相同代价路径之间的抖动
         //get the tf prefix
         ros::NodeHandle prefix_nh;
@@ -120,6 +120,11 @@ void GlobalPlanner::initialize(std::string name, costmap_2d::Costmap2DROS* costm
     } 
     else
         ROS_WARN("This planner has already been initialized, you can't call it twice, doing nothing");
+}
+
+GlobalPlanner::~GlobalPlanner()
+{
+    delete yt_planner_;
 }
 
 void GlobalPlanner::clearRobotCell(const tf::Stamped<tf::Pose>& global_pose, unsigned int mx, unsigned int my) {

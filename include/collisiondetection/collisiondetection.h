@@ -40,6 +40,11 @@ class CollisionDetection {
 
   }
 
+  ~CollisionDetection()
+  {
+    delete world_model_;
+  }
+
   bool isTraversableForRotation(const global_planner::Node2D* node)
   {
     const unsigned char divider = 2;

@@ -39,6 +39,8 @@ class Planner {
           bool using_voronoi, 
           bool lazy_replanning);
 
+  ~Planner();
+
   /*!
      \brief Sets the map e.g. through a callback from a subscriber listening to map updates.
      \param map the map or occupancy grid

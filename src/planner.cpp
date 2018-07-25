@@ -70,6 +70,14 @@ global_planner::Planner::Planner(costmap_2d::Costmap2D* costmap,
 
 }
 
+global_planner::Planner::~Planner()
+{
+  for (unsigned int x = 0; x < gridmap_width_x_; x++) 
+  { delete binMap_[x]; delete binMap_not_[x]; } 
+  delete binMap_;
+  delete binMap_not_;
+}
+
 
 //###################################################
 //                                   INITIALIZE START
@@ -134,7 +142,7 @@ ROS_ERROR("YT: make plan by planner");
 //###################################################
 void global_planner::Planner::plan(std::vector<geometry_msgs::PoseStamped>& plan) {
 
-
+std::cout << "YT start making plan planner.cpp 137" << std::endl;
   //YT 更新
  for (unsigned int x = 0; x < gridmap_width_x_; ++x) {
     for (unsigned int y = 0; y < gridmap_height_y_; ++y) {
@@ -160,7 +168,7 @@ void global_planner::Planner::plan(std::vector<geometry_msgs::PoseStamped>& plan
   }
 
   configurationSpace = new CollisionDetection(costmap_, cell_divider_, footprint_spec_, origin_position_x_, origin_position_y_, gridmap_resolution_);
-
+std::cout << "YT: planner.cpp line 163" << std::endl;
 
 
     // ___________________________
@@ -174,7 +182,7 @@ void global_planner::Planner::plan(std::vector<geometry_msgs::PoseStamped>& plan
     // define list pointers and initialize lists
     Pose2D* nodes3D = new Pose2D[length]();
     Node2D* nodes2D = new Node2D[width * height]();
-
+std::cout << "YT: planner.cpp line 177" << std::endl;
     // ________________________
     // retrieving goal position
     float x = (goal.pose.position.x - origin_position_x_) / gridmap_resolution_;
@@ -182,7 +190,7 @@ void global_planner::Planner::plan(std::vector<geometry_msgs::PoseStamped>& plan
     float t = tf::getYaw(goal.pose.orientation);
     // set theta to a value (0,2PI]
     t = Helper::normalizeHeadingRad(t);
-
+std::cout << "YT: planner.cpp line 185" << std::endl;
     const Pose2D nGoal(x, y, t, 0, 0, nullptr);
 
     // _________________________
@@ -190,13 +198,13 @@ void global_planner::Planner::plan(std::vector<geometry_msgs::PoseStamped>& plan
     x = (start.pose.position.x - origin_position_x_) / gridmap_resolution_;
     y = (start.pose.position.y - origin_position_y_) / gridmap_resolution_;
     t = tf::getYaw(start.pose.orientation);
-
+std::cout << "YT: planner.cpp line 193" << std::endl;
     // set theta to a value (0,2PI]
     t = Helper::normalizeHeadingRad(t);
 
     Pose2D nStart(x, y, t, 0, 0, nullptr);
  
-    // ROS_ERROR("YT: planner.cpp line 206");
+    ROS_INFO("YT: planner.cpp line 199");
 
     // CLEAR THE PATH
     path_.poses.clear();
@@ -207,13 +215,13 @@ void global_planner::Planner::plan(std::vector<geometry_msgs::PoseStamped>& plan
     std::vector<Pose2D> result_path,result_path_1;
     result_path.clear();
     result_path_1.clear();
-
+    // ROS_INFO("YT: planning start, planner.cpp 210");
     //YT nStart和nGoal都是以gridmap原点为原点、gridmap分辨率为单位1的坐标点，生成的结果也是基于gridmap的
     //YT 只将CollisionDetection的指针传进去，实际上CollisionDetection是建立在global_planner下的，而不是在algorithm类中
     yt_alg_->plan(nStart, nGoal, nodes3D, nodes2D, width, height, configurationSpace, voronoiDiagram, result_path);
     yt_alg_1->plan(nStart, nGoal, nodes3D, nodes2D, width, height, configurationSpace, voronoiDiagram, result_path_1);
     
-
+    // ROS_INFO("YT: planning finished");
 
 ////////////////保存结果/////////////////////////////////////////////////////////////
     mid_result.poses.resize(yt_alg_->mid_result.size());
@@ -232,6 +240,17 @@ void global_planner::Planner::plan(std::vector<geometry_msgs::PoseStamped>& plan
     {
       std::cout << "YT: no result_path" << std::endl;
       
+    if(using_voronoi_){
+      delete voronoiDiagram;
+    }
+
+    delete [] nodes3D;
+    delete [] nodes2D;
+
+    delete configurationSpace;
+    delete yt_alg_;
+    delete yt_alg_1;
+
       return;
     }
     //YT 转成PoseStamped
@@ -296,6 +315,9 @@ if(using_voronoi_){
     delete [] nodes3D;
     delete [] nodes2D;
 
+    delete configurationSpace;
+    delete yt_alg_;
+    delete yt_alg_1;
 }
 
 void global_planner::Planner::tracePath(const Pose2D* node, int i, std::vector<Pose2D>& path)
