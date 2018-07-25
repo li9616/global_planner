@@ -6,7 +6,7 @@
 #include <costmap_2d/costmap_2d.h>
 #include <geometry_msgs/Point.h>
 #include "constants.h"
-#include "lookup.h"
+// #include "lookup.h"
 #include "node2d.h"
 #include "pose2d.h"
 #include "collisiondetection/world_model.h"
@@ -33,7 +33,7 @@ class CollisionDetection {
 
     costmap_ = costmap;
     this->grid = nullptr;
-    HybridAStar::Lookup::collisionLookup(collisionLookup);
+    // HybridAStar::Lookup::collisionLookup(collisionLookup);
     
     footprint_spec_ = footprint_spec;
     world_model_ = new global_planner::CostmapModel(*costmap);
@@ -183,8 +183,8 @@ class CollisionDetection {
  private:
   /// The occupancy grid
   nav_msgs::OccupancyGrid::Ptr grid;
-  /// The collision lookup table
-  global_planner::Constants::config collisionLookup[global_planner::Constants::headings * global_planner::Constants::positions];
+  // /// The collision lookup table
+  // global_planner::Constants::config collisionLookup[global_planner::Constants::headings * global_planner::Constants::positions];
 
   costmap_2d::Costmap2D* costmap_;
 

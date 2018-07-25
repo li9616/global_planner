@@ -18,7 +18,7 @@
 #include "voronoi/dynamicvoronoi.h"
 #include "algorithm/algorithm.h"
 #include "pose2d.h"
-#include "lookup.h"
+// #include "lookup.h"
 
 
 namespace global_planner {
@@ -82,8 +82,8 @@ class Planner {
 
   geometry_msgs::PoseStamped start;
   geometry_msgs::PoseStamped goal;
-  /// A lookup table for configurations of the vehicle and their spatial occupancy enumeration
-  Constants::config collisionLookup[Constants::headings * Constants::positions];
+  // /// A lookup table for configurations of the vehicle and their spatial occupancy enumeration
+  // Constants::config collisionLookup[Constants::headings * Constants::positions];
 
   //YT costmap相关
   costmap_2d::Costmap2D* costmap_;

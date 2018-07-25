@@ -102,7 +102,7 @@ add_library(${PROJECT_NAME}
   include/voronoi/bucketedqueue.h
   include/voronoi/point.h
   include/helper.h
-  include/lookup.h
+  # include/lookup.h
   include/node2d.h
   include/pose2d.h
   include/planner.h

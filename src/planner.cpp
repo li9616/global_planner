@@ -7,7 +7,7 @@
 #include "algorithm/Voronoi.h"
 #include "tf/transform_datatypes.h"
 
-using namespace HybridAStar;
+// using namespace HybridAStar;
 //###################################################
 //                                        CONSTRUCTOR
 //###################################################

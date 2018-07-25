@@ -25,7 +25,6 @@ class Algorithm {
   /// The deault constructor
   Algorithm() {}
 
-  // HYBRID A* ALGORITHM
   /*!
      \brief The heart of the planner, the main algorithm starting the search for a collision free and drivable path.
 
@@ -36,7 +35,6 @@ class Algorithm {
      \param width the width of the grid in number of cells
      \param height the height of the grid in number of cells
      \param configurationSpace the lookup of configurations and their spatial occupancy enumeration
-     \param dubinsLookup the lookup of analytical solutions (Dubin's paths)
      \return the pointer to the node satisfying the goal condition
   */
   virtual bool plan(global_planner::Pose2D& start, 
@@ -48,7 +46,7 @@ class Algorithm {
                     CollisionDetection* configurationSpace, 
                     DynamicVoronoi* voronoiDiagram,
                     std::vector<global_planner::Pose2D>& plan) = 0;
-  //  virtual bool updateH(global_planner::Pose2D& start, const global_planner::Pose2D& goal, global_planner::Node2D* nodes2D, int width, int height, HybridAStar::CollisionDetection& configurationSpace);
+  //  virtual bool updateH(global_planner::Pose2D& start, const global_planner::Pose2D& goal, global_planner::Node2D* nodes2D, int width, int height, CollisionDetection& configurationSpace);
 
 
   std::vector<global_planner::Pose2D> mid_result;//YT 存放搜索的中间结果，格式是Pose2D，在planner外再转成PoseArray去显示
