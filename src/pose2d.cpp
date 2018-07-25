@@ -1,5 +1,6 @@
 #include "pose2d.h"
-#define PI 3.1415926
+#include <cmath>
+
 using namespace global_planner;
 
 // CONSTANT VALUES
@@ -9,7 +10,8 @@ const int Pose2D::dir = 3;
 // R = 6, 6.75 DEG
 const float Pose2D::dy[] = { 0,   1,  -1, 0};
 const float Pose2D::dx[] = { 1,   0,   0, -1};
-const float Pose2D::dt[] = { 0,   PI/2,   -PI/2, PI};
+const float Pose2D::dt[] = { 0,   M_PI/2,   -M_PI/2, M_PI};
+
 
 //###################################################
 //                                   CREATE SUCCESSOR

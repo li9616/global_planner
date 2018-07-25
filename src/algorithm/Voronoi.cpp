@@ -75,13 +75,6 @@ int goal_y = (int)goal_temp.getY();
     path1_.insert( path1_.end(), path3_.begin(), path3_.end() );
 
 
-    // for(int i = 0; i < path1_.size(); i++)
-    // {
-    //     int x = std::get<0>(path1_[i]);
-    //     int y = std::get<1>(path1_[i]);
-
-    // }
-
 std::cout << "YT: check!" << std::endl;
     for(int i = path1_.size() - 1; i >= 0; i--)
     {
@@ -127,31 +120,24 @@ bool findPath(std::vector<std::pair<float, float> > *path,
     // closed cells grid (same size as map grid)
     bool **closed=NULL;
     closed = new bool*[sizeX];
-    for (int x=0; x<sizeX; x++) {
+    for (unsigned int x=0; x<sizeX; x++) {
         (closed)[x] = new bool[sizeY];
     }
 
-    for (int y=sizeY-1; y>=0; y--) {
-        for (int x=0; x<sizeX; x++) {
+    for (unsigned int y = sizeY-1; y>=0; y--) {
+        for (unsigned int x=0; x<sizeX; x++) {
             (closed)[x][y] = false;
         }
     }
 
-    //heuristic = zeros(szA(1), szA(2));
-    //for(i=1:szA(1))
-    //    for(j=1:szA(2))
-    //        heuristic(i,j) = norm( [i - goal(1); j - goal(2)] );
-    //    end
-    //end
-
     // actions (number of delta's row) cells grid (same size as map grid)
     int **action=NULL;
     action = new int*[sizeX];
-    for (int x=0; x<sizeX; x++) {
+    for (unsigned int x=0; x<sizeX; x++) {
         (action)[x] = new int[sizeY];
     }
-    for (int y=sizeY-1; y>=0; y--) {
-        for (int x=0; x<sizeX; x++) {
+    for (unsigned int y=sizeY-1; y>=0; y--) {
+        for (unsigned int x=0; x<sizeX; x++) {
             (action)[x][y] = -1;
         }
     }
@@ -214,7 +200,7 @@ bool findPath(std::vector<std::pair<float, float> > *path,
                     continue;
                 }
             }
-            for( int i=0; i < delta.size(); i++ )
+            for( unsigned int i=0; i < delta.size(); i++ )
             {
                 // expansion
                 int x2 = x + std::get<0>(delta[i]);

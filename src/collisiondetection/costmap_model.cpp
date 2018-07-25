@@ -34,7 +34,7 @@
 *
 * Author: Eitan Marder-Eppstein
 *********************************************************************/
-#include "line_iterator.h"
+#include "collisiondetection/line_iterator.h"
 #include "collisiondetection/costmap_model.h"
 #include <costmap_2d/cost_values.h>
 

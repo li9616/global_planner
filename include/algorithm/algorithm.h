@@ -12,7 +12,7 @@
 #include "node2d.h"
 #include "collisiondetection/collisiondetection.h"
 #include "algorithm/primitive.h"
-#include "dynamicvoronoi.h"
+#include "voronoi/dynamicvoronoi.h"
 
 
 namespace yt {

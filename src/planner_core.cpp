@@ -87,7 +87,6 @@ void GlobalPlanner::initialize(std::string name, costmap_2d::Costmap2DROS* costm
         generalized_voronoi_pub_ = private_nh.advertise<nav_msgs::OccupancyGrid>("generalized_voronoi_graph", 1);
         carpose_pub_ = private_nh.advertise<visualization_msgs::Marker>("carpose",1);
 
-
         private_nh.param("allow_unknown", allow_unknown_, true);//YT 将地图上没有的空间都视为自由空间
         private_nh.param("default_tolerance", default_tolerance_, 0.1);
         private_nh.param("cell_divider", cell_divider_, 1);
@@ -100,6 +99,7 @@ void GlobalPlanner::initialize(std::string name, costmap_2d::Costmap2DROS* costm
         costmap_ros_ = costmap_ros;
         costmap_ = costmap_ros->getCostmap();
         
+        //YT set obstacle on the boundary of the costmap
         for(unsigned int i = 0; i < costmap_->getSizeInCellsX(); i++){
             costmap_->setCost(i, 0, costmap_2d::LETHAL_OBSTACLE);
             costmap_->setCost(i, costmap_->getSizeInCellsY() - 1, costmap_2d::LETHAL_OBSTACLE);
@@ -196,7 +196,7 @@ bool GlobalPlanner::makePlan(const geometry_msgs::PoseStamped& start, const geom
     //     clearRobotCell(start_pose, start_cell_x, start_cell_y);
     // }
     //////////////////////////////////////////////////////////////////
-        yt_planner_->plan(start, goal, plan);
+    yt_planner_->plan(start, goal, plan);
 
     publishMidResult(yt_planner_->mid_result);
     publishGeneralizedVoronoi();

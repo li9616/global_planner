@@ -168,7 +168,7 @@ std::cout << "YT start making plan planner.cpp 137" << std::endl;
   }
 
   configurationSpace = new CollisionDetection(costmap_, cell_divider_, footprint_spec_, origin_position_x_, origin_position_y_, gridmap_resolution_);
-std::cout << "YT: planner.cpp line 163" << std::endl;
+  // std::cout << "YT: planner.cpp line 163" << std::endl;
 
 
     // ___________________________
@@ -182,7 +182,7 @@ std::cout << "YT: planner.cpp line 163" << std::endl;
     // define list pointers and initialize lists
     Pose2D* nodes3D = new Pose2D[length]();
     Node2D* nodes2D = new Node2D[width * height]();
-std::cout << "YT: planner.cpp line 177" << std::endl;
+    // std::cout << "YT: planner.cpp line 177" << std::endl;
     // ________________________
     // retrieving goal position
     float x = (goal.pose.position.x - origin_position_x_) / gridmap_resolution_;
@@ -190,7 +190,7 @@ std::cout << "YT: planner.cpp line 177" << std::endl;
     float t = tf::getYaw(goal.pose.orientation);
     // set theta to a value (0,2PI]
     t = Helper::normalizeHeadingRad(t);
-std::cout << "YT: planner.cpp line 185" << std::endl;
+    // std::cout << "YT: planner.cpp line 185" << std::endl;
     const Pose2D nGoal(x, y, t, 0, 0, nullptr);
 
     // _________________________
@@ -198,7 +198,7 @@ std::cout << "YT: planner.cpp line 185" << std::endl;
     x = (start.pose.position.x - origin_position_x_) / gridmap_resolution_;
     y = (start.pose.position.y - origin_position_y_) / gridmap_resolution_;
     t = tf::getYaw(start.pose.orientation);
-std::cout << "YT: planner.cpp line 193" << std::endl;
+    // std::cout << "YT: planner.cpp line 193" << std::endl;
     // set theta to a value (0,2PI]
     t = Helper::normalizeHeadingRad(t);
 
@@ -347,7 +347,7 @@ void global_planner::Planner::visualizeBinMap(const char* filename)
   fprintf(F, "%d %d 255\n", gridmap_width_x_, gridmap_height_y_);//YT 列像素数，行像素数，中间有空格
   std::cout << "gridmap_width_x_" << gridmap_width_x_ << ", gridmap_height_y_" << gridmap_height_y_ << std::endl;
   for(int y = gridmap_height_y_ - 1; y >=0; y--){      
-    for(int x = 0; x < gridmap_width_x_; x++){	
+    for(unsigned int x = 0; x < gridmap_width_x_; x++){	
       unsigned char c = 0;
       if (binMap_[x][y] == 0) {//YT 障碍物是红色，外边框是红色
         fputc( 255, F );

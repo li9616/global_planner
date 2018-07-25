@@ -7,7 +7,7 @@
 #include <limits.h>
 #include <queue>
 #include <flann/flann.hpp>
-#include "bucketedqueue.h"
+#include "voronoi/bucketedqueue.h"
 
 //! A DynamicVoronoi object computes and updates a distance map and Voronoi diagram.
 class DynamicVoronoi {

@@ -8,7 +8,7 @@
 #include <set>
 #include <queue>
 #include <assert.h>
-#include "point.h"
+#include "voronoi/point.h"
 
 //! Priority queue for integer coordinates with squared distances as priority.
 /** A priority queue that uses buckets to group elements with the same priority.

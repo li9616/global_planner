@@ -81,16 +81,16 @@ add_library(${PROJECT_NAME}
   src/algorithm/primitive.cpp
   src/algorithm/Voronoi.cpp
   src/collisiondetection/collisiondetection.cpp
-  src/dynamicvoronoi.cpp
+  src/voronoi/dynamicvoronoi.cpp
   src/node2d.cpp
   src/pose2d.cpp
   src/planner.cpp
-  src/bucketedqueue.cpp
+  src/voronoi/bucketedqueue.cpp
   
   include/planner_core.h
   include/collisiondetection/world_model.h
   include/collisiondetection/costmap_model.h
-  include/line_iterator.h
+  include/collisiondetection/line_iterator.h
   include/algorithm/algorithm.h
   include/algorithm/AStar.h
   include/algorithm/HAStar.h
@@ -98,9 +98,9 @@ add_library(${PROJECT_NAME}
   include/algorithm/Voronoi.h
   include/collisiondetection/collisiondetection.h
   include/constants.h
-  include/dynamicvoronoi.h
-  include/bucketedqueue.h
-  include/point.h
+  include/voronoi/dynamicvoronoi.h
+  include/voronoi/bucketedqueue.h
+  include/voronoi/point.h
   include/helper.h
   include/lookup.h
   include/node2d.h
@@ -122,11 +122,11 @@ add_executable(planner
   src/algorithm/primitive.cpp
   src/algorithm/Voronoi.cpp
   src/collisiondetection/collisiondetection.cpp
-  src/dynamicvoronoi.cpp
+  src/voronoi/dynamicvoronoi.cpp
   src/node2d.cpp
   src/pose2d.cpp
   src/planner.cpp
-  src/bucketedqueue.cpp
+  src/voronoi/bucketedqueue.cpp
 )
 add_dependencies(planner ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 target_link_libraries(planner

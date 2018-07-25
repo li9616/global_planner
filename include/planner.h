@@ -15,7 +15,7 @@
 #include "constants.h"
 #include "helper.h"
 #include "collisiondetection/collisiondetection.h"
-#include "dynamicvoronoi.h"
+#include "voronoi/dynamicvoronoi.h"
 #include "algorithm/algorithm.h"
 #include "pose2d.h"
 #include "lookup.h"

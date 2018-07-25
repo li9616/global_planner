@@ -11,6 +11,10 @@ namespace global_planner {
 
    Each node has a unique configuration (x, y, theta) in the configuration space C.
 */
+
+
+
+
 class Pose2D {
  public:
 
