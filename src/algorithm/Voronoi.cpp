@@ -5,7 +5,7 @@ using namespace yt;
 bool findPath(std::vector<std::pair<float, float> > *path,
               int init_x, int init_y,
               int goal_x, int goal_y,
-              DynamicVoronoi *voronoi,
+              global_planner::DynamicVoronoi *voronoi,
               bool check_is_voronoi_cell,
               bool stop_at_voronoi );
 
@@ -17,7 +17,7 @@ bool yt::Voronoi::plan(global_planner::Pose2D& start_temp,
                     int width, 
                     int height, 
                     CollisionDetection* configurationSpace, 
-                    DynamicVoronoi* voronoiDiagram, 
+                    global_planner::DynamicVoronoi* voronoiDiagram, 
                     std::vector<global_planner::Pose2D>& plan){
 
 
@@ -93,7 +93,7 @@ std::cout << "YT: check!" << std::endl;
 bool findPath(std::vector<std::pair<float, float> > *path,
               int init_x, int init_y,
               int goal_x, int goal_y,
-              DynamicVoronoi *voronoi,
+              global_planner::DynamicVoronoi *voronoi,
               bool check_is_voronoi_cell,
               bool stop_at_voronoi )
 {

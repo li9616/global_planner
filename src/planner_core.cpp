@@ -54,25 +54,25 @@
 #include "collisiondetection/costmap_model.h"
 
 //register this planner as a BaseGlobalPlanner plugin
-PLUGINLIB_EXPORT_CLASS(global_planner::GlobalPlanner, nav_core::BaseGlobalPlanner)
+PLUGINLIB_EXPORT_CLASS(global_planner::YTPlanner, nav_core::BaseGlobalPlanner)
 
 namespace global_planner {
 
 
-GlobalPlanner::GlobalPlanner() :
+YTPlanner::YTPlanner() :
         costmap_(NULL), initialized_(false), allow_unknown_(true) {
 }
 
-GlobalPlanner::GlobalPlanner(std::string name, costmap_2d::Costmap2DROS* costmap_ros, std::string frame_id) :
+YTPlanner::YTPlanner(std::string name, costmap_2d::Costmap2DROS* costmap_ros, std::string frame_id) :
         costmap_(NULL), initialized_(false), allow_unknown_(true) {
     initialize(name, costmap_ros, frame_id);
 }
 
-void GlobalPlanner::initialize(std::string name, costmap_2d::Costmap2DROS* costmap_ros) {
+void YTPlanner::initialize(std::string name, costmap_2d::Costmap2DROS* costmap_ros) {
     initialize(name, costmap_ros, costmap_ros->getGlobalFrameID());
 }
 
-void GlobalPlanner::initialize(std::string name, costmap_2d::Costmap2DROS* costmap_ros, std::string frame_id) 
+void YTPlanner::initialize(std::string name, costmap_2d::Costmap2DROS* costmap_ros, std::string frame_id) 
 {
     if (!initialized_)
     {
@@ -90,7 +90,7 @@ void GlobalPlanner::initialize(std::string name, costmap_2d::Costmap2DROS* costm
         private_nh.param("allow_unknown", allow_unknown_, true);//YT 将地图上没有的空间都视为自由空间
         private_nh.param("default_tolerance", default_tolerance_, 0.1);
         private_nh.param("cell_divider", cell_divider_, 1);
-        private_nh.param("using_voronoi", using_voronoi_, false);
+        private_nh.param("using_voronoi", using_voronoi_, true);
         private_nh.param("lazy_replanning", lazy_replanning_, false);//YT 如果启动lazy_replanning那么只有当障碍物被挡住时才会启动重新规划路径，可以应对相同代价路径之间的抖动
         //get the tf prefix
         ros::NodeHandle prefix_nh;
@@ -122,12 +122,12 @@ void GlobalPlanner::initialize(std::string name, costmap_2d::Costmap2DROS* costm
         ROS_WARN("This planner has already been initialized, you can't call it twice, doing nothing");
 }
 
-GlobalPlanner::~GlobalPlanner()
+YTPlanner::~YTPlanner()
 {
     delete yt_planner_;
 }
 
-void GlobalPlanner::clearRobotCell(const tf::Stamped<tf::Pose>& global_pose, unsigned int mx, unsigned int my) {
+void YTPlanner::clearRobotCell(const tf::Stamped<tf::Pose>& global_pose, unsigned int mx, unsigned int my) {
     if (!initialized_) {
         ROS_ERROR("This planner has not been initialized yet, but it is being used, please call initialize() before use");
         return;
@@ -139,12 +139,12 @@ void GlobalPlanner::clearRobotCell(const tf::Stamped<tf::Pose>& global_pose, uns
 
 }
 
-bool GlobalPlanner::makePlan(const geometry_msgs::PoseStamped& start, const geometry_msgs::PoseStamped& goal,
+bool YTPlanner::makePlan(const geometry_msgs::PoseStamped& start, const geometry_msgs::PoseStamped& goal,
                            std::vector<geometry_msgs::PoseStamped>& plan) {
         return makePlan(start, goal, default_tolerance_, plan);
 }
 
-bool GlobalPlanner::makePlan(const geometry_msgs::PoseStamped& start, const geometry_msgs::PoseStamped& goal,
+bool YTPlanner::makePlan(const geometry_msgs::PoseStamped& start, const geometry_msgs::PoseStamped& goal,
                            double tolerance, std::vector<geometry_msgs::PoseStamped>& plan) {
     boost::mutex::scoped_lock lock(mutex_);
     if (!initialized_) {
@@ -214,7 +214,7 @@ bool GlobalPlanner::makePlan(const geometry_msgs::PoseStamped& start, const geom
     return !plan.empty();
 }
 
-void GlobalPlanner::publishPlan(const std::vector<geometry_msgs::PoseStamped>& path) {
+void YTPlanner::publishPlan(const std::vector<geometry_msgs::PoseStamped>& path) {
     if (!initialized_) {
         ROS_ERROR(
                 "This planner has not been initialized yet, but it is being used, please call initialize() before use");
@@ -277,7 +277,7 @@ void GlobalPlanner::publishPlan(const std::vector<geometry_msgs::PoseStamped>& p
     carpose_pub_.publish(carpose);
 }
 
-void GlobalPlanner::publishMidResult(geometry_msgs::PoseArray& mid_result){
+void YTPlanner::publishMidResult(geometry_msgs::PoseArray& mid_result){
     if(!initialized_){
         ROS_ERROR(
                 "This planner has not been initialized yet, but it is being used, please call initialize() before use");
@@ -289,7 +289,7 @@ void GlobalPlanner::publishMidResult(geometry_msgs::PoseArray& mid_result){
     mid_result_pub_.publish(mid_result);
 }
 
-void GlobalPlanner::publishFootprint()
+void YTPlanner::publishFootprint()
 {
     nav_msgs::Path footprintpath;
 
@@ -311,7 +311,7 @@ void GlobalPlanner::publishFootprint()
     footprint_spec_pub_.publish(footprintpath);
 }
 
-void GlobalPlanner::publishGeneralizedVoronoi()
+void YTPlanner::publishGeneralizedVoronoi()
 {
     if(using_voronoi_){
         nav_msgs::OccupancyGrid map_temp;

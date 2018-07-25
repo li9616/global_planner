@@ -331,7 +331,7 @@ void global_planner::Planner::tracePath(const Pose2D* node, int i, std::vector<P
   tracePath(node->getPred(), i, path);
 }
 
-DynamicVoronoi* global_planner::Planner::getVoronoi()
+global_planner::DynamicVoronoi* global_planner::Planner::getVoronoi()
 {
   return voronoiDiagram;
 }
@@ -348,7 +348,7 @@ void global_planner::Planner::visualizeBinMap(const char* filename)
   std::cout << "gridmap_width_x_" << gridmap_width_x_ << ", gridmap_height_y_" << gridmap_height_y_ << std::endl;
   for(int y = gridmap_height_y_ - 1; y >=0; y--){      
     for(unsigned int x = 0; x < gridmap_width_x_; x++){	
-      unsigned char c = 0;
+      // unsigned char c = 0;
       if (binMap_[x][y] == 0) {//YT 障碍物是红色，外边框是红色
         fputc( 255, F );
         fputc( 0, F );

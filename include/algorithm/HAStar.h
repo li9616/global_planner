@@ -17,7 +17,7 @@ virtual bool plan(global_planner::Pose2D& start,
                     int width, 
                     int height, 
                     CollisionDetection* configurationSpace, 
-                    DynamicVoronoi* voronoiDiagram, 
+                    global_planner::DynamicVoronoi* voronoiDiagram, 
                     std::vector<global_planner::Pose2D>& plan);
   // virtual bool updateH(global_planner::Pose2D& start, const global_planner::Pose2D& goal, global_planner::Node2D* nodes2D, int width, int height, CollisionDetection& configurationSpace);
 

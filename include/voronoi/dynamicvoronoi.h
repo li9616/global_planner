@@ -8,7 +8,9 @@
 #include <queue>
 #include <flann/flann.hpp>
 #include "voronoi/bucketedqueue.h"
+#include "pose2d.h"
 
+namespace global_planner {
 //! A DynamicVoronoi object computes and updates a distance map and Voronoi diagram.
 class DynamicVoronoi {
 
@@ -50,6 +52,11 @@ class DynamicVoronoi {
 
   // bool** get_Map_in_voronoi(){return gridMap;}
   unsigned char* getMapForShow(){return map_for_show_;}
+
+  bool getPathInVoronoi(int start_x, int start_y, int goal_x, int goal_y, std::vector<global_planner::Pose2D>& plan);//YT based on cell of gridmap
+
+
+
   // was private, changed to public for obstX, obstY
  public:
   struct dataCell {
@@ -103,9 +110,21 @@ class DynamicVoronoi {
 
   // dataCell** getData(){ return data; }
 
+private:
+    std::vector<std::pair<float, float> > path1_;
+    std::vector<std::pair<float, float> > path2_;
+    std::vector<std::pair<float, float> > path3_;
+
+    bool findPath(std::vector<std::pair<float, float> > *path,
+              int init_x, int init_y,
+              int goal_x, int goal_y,
+              global_planner::DynamicVoronoi *voronoi,
+              bool check_is_voronoi_cell,
+              bool stop_at_voronoi );
+
 
 };
-
+}
 
 #endif
 

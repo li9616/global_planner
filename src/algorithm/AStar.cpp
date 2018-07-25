@@ -40,7 +40,7 @@ bool yt::AStar::plan(global_planner::Pose2D& start_temp,
                     int width, 
                     int height, 
                     CollisionDetection* configurationSpace, 
-                    DynamicVoronoi* voronoiDiagram, 
+                    global_planner::DynamicVoronoi* voronoiDiagram, 
                     std::vector<global_planner::Pose2D>& plan){
 
   ////////////////////////////////////

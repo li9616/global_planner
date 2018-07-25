@@ -58,12 +58,12 @@
 namespace global_planner {
 
 
-class GlobalPlanner : public nav_core::BaseGlobalPlanner {
+class YTPlanner : public nav_core::BaseGlobalPlanner {
     public:
         /**
          * @brief  Default constructor for the PlannerCore object
          */
-        GlobalPlanner();
+        YTPlanner();
 
         /**
          * @brief  Constructor for the PlannerCore object
@@ -71,12 +71,12 @@ class GlobalPlanner : public nav_core::BaseGlobalPlanner {
          * @param  costmap A pointer to the costmap to use
          * @param  frame_id Frame of the costmap
          */
-        GlobalPlanner(std::string name, costmap_2d::Costmap2DROS* costmap_ros, std::string frame_id);
+        YTPlanner(std::string name, costmap_2d::Costmap2DROS* costmap_ros, std::string frame_id);
 
         /**
          * @brief  Default deconstructor for the PlannerCore object
          */
-        ~GlobalPlanner();
+        ~YTPlanner();
 
         /**
          * @brief  Initialization function for the PlannerCore object
