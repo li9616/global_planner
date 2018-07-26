@@ -55,7 +55,7 @@ class DynamicVoronoi : public Plugin {
 
   bool getPathInVoronoi(int start_x, int start_y, int goal_x, int goal_y, std::vector<global_planner::Pose2D>& plan);//YT based on cell of gridmap
 
-
+  // global_planner::Pose2D getNearestPointOnVor(int cell_x, int cell_y);
 
   // was private, changed to public for obstX, obstY
  public:
@@ -114,6 +114,8 @@ private:
     std::vector<std::pair<float, float> > path1_;
     std::vector<std::pair<float, float> > path2_;
     std::vector<std::pair<float, float> > path3_;
+
+    std::vector<std::pair<int, int> > voronoi_point_;
 
     bool findPath(std::vector<std::pair<float, float> > *path,
               int init_x, int init_y,

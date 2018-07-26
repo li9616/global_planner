@@ -160,10 +160,8 @@ std::cout << "YT start making plan planner.cpp 137" << std::endl;
     voronoiDiagram->initializeMap(gridmap_width_x_, gridmap_height_y_, binMap_not_);
     voronoiDiagram->update();
     voronoiDiagram->prune();
-    // ROS_WARN("YT: start saving voronoi graph");
     std::cout << "YT: start saving voronoi graph ...";
     voronoiDiagram->visualize();
-    // ROS_WARN("YT: voronoi_graph has been saved");
     std::cout << "end!" << std::endl;
   }
 

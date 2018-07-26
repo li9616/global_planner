@@ -3,6 +3,7 @@
 #include <math.h>
 #include <iostream>
 #include <ros/ros.h>
+#include <utility>
 
 using namespace global_planner;
 
@@ -362,6 +363,7 @@ bool DynamicVoronoi::isOccupied(int &x, int &y, dataCell &c) {
 
 void DynamicVoronoi::visualize(const char *filename) {
   // write pgm files
+voronoi_point_.clear();
 
   FILE* F = fopen(filename, "w");
   if (!F) {
@@ -379,6 +381,7 @@ void DynamicVoronoi::visualize(const char *filename) {
         fputc( 0, F );
         fputc( 0, F );
         *(map_for_show_ + y * sizeX + x) = 128;
+        voronoi_point_.push_back(std::pair<int, int>(x, y));
       } else if (data[x][y].sqdist==0) {
         fputc( 0, F );
         fputc( 0, F );
@@ -396,6 +399,7 @@ void DynamicVoronoi::visualize(const char *filename) {
       }
     }
   }
+  std::cout << "YT: check the size of voronoi_point_: " << voronoi_point_.size() << std::endl;
   fclose(F);
 }
 
@@ -559,9 +563,8 @@ bool DynamicVoronoi::getPathInVoronoi(int start_x, int start_y, int goal_x, int 
     //YT find the path from voronoi to goal
     if( !isVoronoi(goal_x,goal_y) )
     {
-        //        path3 = findPath( goal, init, A, 0, 1 );
         res3 = findPath( &path3_, goal_x, goal_y, start_x, start_y, this, 0, 1 );
-        std::cout << "findPath 3 res " << res3 << std::endl;
+        // std::cout << "findPath 3 res " << res3 << std::endl;
         //        goal = path3(end,:);
         goal_x = std::get<0>( path3_[path3_.size()-1] );
         goal_y = std::get<1>( path3_[path3_.size()-1] );
@@ -575,7 +578,7 @@ bool DynamicVoronoi::getPathInVoronoi(int start_x, int start_y, int goal_x, int 
     if( !isVoronoi(start_x,start_y) )
     {
         res1 = findPath( &path1_, start_x, start_y, goal_x, goal_y, this, 0, 1 );
-        std::cout << "findPath 1 res " << res1 << std::endl;
+        // std::cout << "findPath 1 res " << res1 << std::endl;
         start_x = std::get<0>( path1_[path1_.size()-1] );
         start_y = std::get<1>( path1_[path1_.size()-1] );
 
@@ -584,7 +587,7 @@ bool DynamicVoronoi::getPathInVoronoi(int start_x, int start_y, int goal_x, int 
 
     //YT find the path on voronoi
     res2 = findPath( &path2_, start_x, start_y, goal_x, goal_y, this, 1, 0 );
-    std::cout << "findPath 2 res " << res2 << std::endl;
+    // std::cout << "findPath 2 res " << res2 << std::endl;
 
 
     if(!(res1 && res2 && res3))
@@ -621,8 +624,6 @@ bool DynamicVoronoi::findPath(std::vector<std::pair<float, float> > *path,
               bool check_is_voronoi_cell,
               bool stop_at_voronoi )
 {
-//    ROS_INFO("init_x %d, init_y %d, goal_x %d, goal_y %d, check_is_voronoi_cell %d, stop_at_voronoi %d", init_x, init_y, goal_x, goal_y, check_is_voronoi_cell, stop_at_voronoi);
-//    ROS_INFO("isVoronoi(init) %d; isVoronoi(goal) %d", voronoi->isVoronoi(init_x, init_y), voronoi->isVoronoi(goal_x, goal_y) );
     // available movements (actions) of the robot on the grid
     std::vector<std::pair<int, int> > delta;
     delta.push_back( {-1, 0} );     // go up
@@ -773,7 +774,6 @@ bool DynamicVoronoi::findPath(std::vector<std::pair<float, float> > *path,
         int x2 = x - std::get<0>( delta[ action[x][y] ] );
         int y2 = y - std::get<1>( delta[ action[x][y] ] );
 
-
         x = x2;
         y = y2;
     }
@@ -781,3 +781,30 @@ bool DynamicVoronoi::findPath(std::vector<std::pair<float, float> > *path,
     reverse(path->begin(), path->end());
     return true;
 }
+
+// global_planner::Pose2D DynamicVoronoi::getNearestPointOnVor(int cell_x, int cell_y){
+//   global_planner::Pose2D pose;//YT only use x and y 
+
+//   //YT get all the point on voronoi_path
+//   voronoi_point_.clear();
+//     unsigned int sizeY = getSizeY();
+//         unsigned int sizeX = getSizeX();
+//   // for(int y = sizeY-1; y >=0; y--){      
+//   //   for(int x = 0; x<sizeX; x++){	
+//   //     unsigned char c = 0;
+//   //     if (isVoronoi(x,y)) {
+//   //       voronoi_point_.push_back(std::pair<int, int>(x, y));
+//   //     }
+//   //   }
+//   // }
+//   std::cout << "YT: check the size of voronoi_point_: "<< voronoi_point_.size() << std::endl;
+
+
+// //YT setup KDTree
+
+
+// //YT search
+
+
+//   return pose;
+// }

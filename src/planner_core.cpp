@@ -332,16 +332,19 @@ void YTPlanner::publishGeneralizedVoronoi()
         map_temp.info.origin.orientation.z = 0;
         map_temp.info.origin.orientation.w = 1;
 
-        unsigned char* vor_map = yt_planner_->getVoronoi()->getMapForShow();
+        unsigned char* vor_map = NULL;
+
+        vor_map = yt_planner_->getVoronoi()->getMapForShow();
         //bug,如果没有路径结果会返回空指针
-        std::cout << "YT: prepare to copy voronoi_graph" << std::endl;
-        map_temp.data.resize(map_temp.info.width * map_temp.info.height);
-        memcpy((void*)map_temp.data.data(), (void*)vor_map, sizeof(unsigned char) * map_temp.info.width * map_temp.info.height);
-        std::cout << "YT: copy voronoi_graph finished" << std::endl;
-        generalized_voronoi_pub_.publish(map_temp);
-        // for(unsigned int i = 0; i < map_temp.info.width * map_temp.info.height; i++){
-        //     std::cout << (unsigned int)*(vor_map+i) <<", ";
-        // }
+        if(vor_map != NULL){
+            std::cout << "YT: prepare to copy voronoi_graph" << std::endl;
+            map_temp.data.resize(map_temp.info.width * map_temp.info.height);
+            memcpy((void*)map_temp.data.data(), (void*)vor_map, sizeof(unsigned char) * map_temp.info.width * map_temp.info.height);
+            std::cout << "YT: copy voronoi_graph finished" << std::endl;
+            generalized_voronoi_pub_.publish(map_temp);
+        }
+
+
     }
     else{
         ROS_ERROR("YT: no voronoi plugin in global_planner");

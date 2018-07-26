@@ -125,7 +125,7 @@ bool yt::AStar::plan(global_planner::Pose2D& start_temp,
       // GOAL TEST
       if (*nPred == goal) {
         //YT 找到了目标路径，要通过plan参数传回去
-        std::cout << "YT: A* has found the goal" << std::endl;
+        // std::cout << "YT: A* has found the goal" << std::endl;
 
         ///////////////////////////////////////////////////
         tracePath(nPred, 0, plan);//YT 从链表返回出plan，但是plan里面的东西是不带起终点，而且顺序是反着的
