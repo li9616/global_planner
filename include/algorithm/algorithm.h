@@ -8,11 +8,11 @@
 
 // typedef ompl::base::SE2StateSpace::StateType State;
 
-#include "pose2d.h"
-#include "node2d.h"
-#include "collisiondetection/collisiondetection.h"
-#include "algorithm/primitive.h"
-#include "voronoi/dynamicvoronoi.h"
+#include "base_type/pose2d.h"
+#include "base_type/node2d.h"
+#include "toolbox/collisiondetection/collisiondetection.h"
+#include "base_type/primitive.h"
+#include "toolbox/voronoi/dynamicvoronoi.h"
 
 
 namespace yt {

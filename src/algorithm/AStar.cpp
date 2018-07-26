@@ -1,7 +1,7 @@
 #include "algorithm/AStar.h"
 
-#include "node2d.h"
-#include "pose2d.h"
+#include "base_type/node2d.h"
+#include "base_type/pose2d.h"
 
 #include "algorithm/algorithm.h"
 #include <Eigen/Dense>

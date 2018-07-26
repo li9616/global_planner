@@ -2,8 +2,8 @@
 #define _ASTAR_
 
 #include "algorithm/algorithm.h"
-#include "node2d.h"
-#include "collisiondetection/collisiondetection.h"
+#include "base_type/node2d.h"
+#include "toolbox/collisiondetection/collisiondetection.h"
 namespace yt{
 class AStar : public Algorithm
 {

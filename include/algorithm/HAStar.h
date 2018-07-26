@@ -2,7 +2,7 @@
 #define _HASTAR_
 
 #include "algorithm/algorithm.h"
-#include "collisiondetection/collisiondetection.h"
+#include "toolbox/collisiondetection/collisiondetection.h"
 namespace yt{
 class HAStar : public Algorithm
 {

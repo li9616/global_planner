@@ -123,8 +123,8 @@ bool findPath(std::vector<std::pair<float, float> > *path,
     for (unsigned int x=0; x<sizeX; x++) {
         (closed)[x] = new bool[sizeY];
     }
-
-    for (unsigned int y = sizeY-1; y>=0; y--) {
+std::cout << "YT: voronoi.cpp 126" << std::endl;
+    for ( int y = sizeY-1; y>=0; y--) {
         for (unsigned int x=0; x<sizeX; x++) {
             (closed)[x][y] = false;
         }
@@ -136,12 +136,12 @@ bool findPath(std::vector<std::pair<float, float> > *path,
     for (unsigned int x=0; x<sizeX; x++) {
         (action)[x] = new int[sizeY];
     }
-    for (unsigned int y=sizeY-1; y>=0; y--) {
+    for ( int y=sizeY-1; y>=0; y--) {
         for (unsigned int x=0; x<sizeX; x++) {
             (action)[x][y] = -1;
         }
     }
-
+std::cout << "YT: voronoi.cpp 144" << std::endl;
     // set current cell
     int x = init_x;
     int y = init_y;
@@ -159,7 +159,7 @@ bool findPath(std::vector<std::pair<float, float> > *path,
     bool found = false;
     // no solution could be found flag
     bool resign = false;
-
+std::cout << "YT: voronoi.cpp 162" << std::endl;
     while( !found && !resign )
     {
         if (open.size() == 0)
@@ -240,7 +240,7 @@ bool findPath(std::vector<std::pair<float, float> > *path,
 
     int i = 0;
     path->clear();
-
+std::cout << "YT: voronoi.cpp 243" << std::endl;
     while( x != init_x || y != init_y )
     {
         path->push_back({x,y});
@@ -249,11 +249,10 @@ bool findPath(std::vector<std::pair<float, float> > *path,
         int x2 = x - std::get<0>( delta[ action[x][y] ] );
         int y2 = y - std::get<1>( delta[ action[x][y] ] );
 
-
         x = x2;
         y = y2;
     }
-
+std::cout << "YT: voronoi.cpp 255" << std::endl;
     reverse(path->begin(), path->end());
     return true;
 }

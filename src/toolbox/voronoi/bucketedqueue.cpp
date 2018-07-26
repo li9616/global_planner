@@ -1,4 +1,4 @@
-#include "voronoi/bucketedqueue.h"
+#include "toolbox/voronoi/bucketedqueue.h"
 
 #include "limits.h"
 #include <stdio.h>

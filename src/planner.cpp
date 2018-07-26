@@ -210,7 +210,9 @@ std::cout << "YT start making plan planner.cpp 137" << std::endl;
     path_.poses.clear();
 
     yt_alg_ = new yt::AStar();
+    std::cout << "YT: planner.cpp line 213" << std::endl;
     yt_alg_1 = new yt::Voronoi(using_voronoi_);
+    std::cout << "YT: planner.cpp line 215" << std::endl;
     
     std::vector<Pose2D> result_path,result_path_1;
     result_path.clear();

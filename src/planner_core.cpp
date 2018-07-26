@@ -51,7 +51,7 @@
 
 #include <flann/flann.hpp>
 
-#include "collisiondetection/costmap_model.h"
+#include "toolbox/collisiondetection/costmap_model.h"
 
 //register this planner as a BaseGlobalPlanner plugin
 PLUGINLIB_EXPORT_CLASS(global_planner::YTPlanner, nav_core::BaseGlobalPlanner)

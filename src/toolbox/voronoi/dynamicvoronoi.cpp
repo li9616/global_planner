@@ -1,5 +1,5 @@
-#include "voronoi/dynamicvoronoi.h"
-#include "node2d.h"
+#include "toolbox/voronoi/dynamicvoronoi.h"
+#include "base_type/node2d.h"
 #include <math.h>
 #include <iostream>
 #include <ros/ros.h>

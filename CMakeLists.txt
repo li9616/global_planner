@@ -74,38 +74,41 @@ include_directories(
 )
 add_library(${PROJECT_NAME}
   src/planner_core.cpp
-  src/collisiondetection/costmap_model.cpp
+  src/toolbox/collisiondetection/costmap_model.cpp
   src/algorithm/algorithm.cpp
   src/algorithm/AStar.cpp
   src/algorithm/HAStar.cpp
-  src/algorithm/primitive.cpp
+  src/base_type/primitive.cpp
   src/algorithm/Voronoi.cpp
-  src/collisiondetection/collisiondetection.cpp
-  src/voronoi/dynamicvoronoi.cpp
-  src/node2d.cpp
-  src/pose2d.cpp
+  src/toolbox/collisiondetection/collisiondetection.cpp
+  src/toolbox/voronoi/dynamicvoronoi.cpp
+  src/base_type/node2d.cpp
+  src/base_type/pose2d.cpp
   src/planner.cpp
-  src/voronoi/bucketedqueue.cpp
+  src/toolbox/voronoi/bucketedqueue.cpp
+  src/toolbox/toolbox.cpp
+  src/toolbox/visual/visual.cpp
   
   include/planner_core.h
-  include/collisiondetection/world_model.h
-  include/collisiondetection/costmap_model.h
-  include/collisiondetection/line_iterator.h
+  include/toolbox/collisiondetection/world_model.h
+  include/toolbox/collisiondetection/costmap_model.h
+  include/toolbox/collisiondetection/line_iterator.h
   include/algorithm/algorithm.h
   include/algorithm/AStar.h
   include/algorithm/HAStar.h
-  include/algorithm/primitive.h
+  include/base_type/primitive.h
   include/algorithm/Voronoi.h
-  include/collisiondetection/collisiondetection.h
+  include/toolbox/collisiondetection/collisiondetection.h
   include/constants.h
-  include/voronoi/dynamicvoronoi.h
-  include/voronoi/bucketedqueue.h
-  include/voronoi/point.h
+  include/toolbox/voronoi/dynamicvoronoi.h
+  include/toolbox/voronoi/bucketedqueue.h
+  include/toolbox/voronoi/point.h
   include/helper.h
-  # include/lookup.h
-  include/node2d.h
-  include/pose2d.h
+  include/base_type/node2d.h
+  include/base_type/pose2d.h
   include/planner.h
+  include/toolbox/toolbox.h
+  include/toolbox/visual/visual.h
 
 )
 add_dependencies(${PROJECT_NAME} ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
@@ -115,24 +118,28 @@ target_link_libraries(${PROJECT_NAME} ${catkin_LIBRARIES} ${FLANN_LIBRARIES})
 
 add_executable(planner
   src/plan_node.cpp 
-  src/collisiondetection/costmap_model.cpp
+  src/toolbox/collisiondetection/costmap_model.cpp
   src/algorithm/algorithm.cpp
   src/algorithm/AStar.cpp
   src/algorithm/HAStar.cpp
-  src/algorithm/primitive.cpp
+  src/base_type/primitive.cpp
   src/algorithm/Voronoi.cpp
-  src/collisiondetection/collisiondetection.cpp
-  src/voronoi/dynamicvoronoi.cpp
-  src/node2d.cpp
-  src/pose2d.cpp
+  src/toolbox/collisiondetection/collisiondetection.cpp
+  src/toolbox/voronoi/dynamicvoronoi.cpp
+  src/base_type/node2d.cpp
+  src/base_type/pose2d.cpp
   src/planner.cpp
-  src/voronoi/bucketedqueue.cpp
+  src/toolbox/voronoi/bucketedqueue.cpp
+  src/toolbox/toolbox.cpp
+  src/toolbox/visual/visual.cpp
 )
 add_dependencies(planner ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 target_link_libraries(planner
   ${PROJECT_NAME}
   ${catkin_LIBRARIES}
 )
+
+# set_target_properties(planner PROPERTIES COMPILE_FLAGS "-g")
 
 install(TARGETS ${PROJECT_NAME} planner
   ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}

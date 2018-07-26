@@ -7,10 +7,10 @@
 #include <geometry_msgs/Point.h>
 #include "constants.h"
 // #include "lookup.h"
-#include "node2d.h"
-#include "pose2d.h"
-#include "collisiondetection/world_model.h"
-#include "collisiondetection/costmap_model.h"
+#include "base_type/node2d.h"
+#include "base_type/pose2d.h"
+#include "toolbox/collisiondetection/world_model.h"
+#include "toolbox/collisiondetection/costmap_model.h"
 
 /*!
    \brief The CollisionDetection class determines whether a given configuration q of the robot will result in a collision with the environment.

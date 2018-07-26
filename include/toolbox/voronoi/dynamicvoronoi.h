@@ -7,8 +7,8 @@
 #include <limits.h>
 #include <queue>
 #include <flann/flann.hpp>
-#include "voronoi/bucketedqueue.h"
-#include "pose2d.h"
+#include "toolbox/voronoi/bucketedqueue.h"
+#include "base_type/pose2d.h"
 
 namespace global_planner {
 //! A DynamicVoronoi object computes and updates a distance map and Voronoi diagram.

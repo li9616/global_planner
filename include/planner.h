@@ -14,10 +14,10 @@
 
 #include "constants.h"
 #include "helper.h"
-#include "collisiondetection/collisiondetection.h"
-#include "voronoi/dynamicvoronoi.h"
+#include "toolbox/collisiondetection/collisiondetection.h"
+#include "toolbox/voronoi/dynamicvoronoi.h"
 #include "algorithm/algorithm.h"
-#include "pose2d.h"
+#include "base_type/pose2d.h"
 // #include "lookup.h"
 
 

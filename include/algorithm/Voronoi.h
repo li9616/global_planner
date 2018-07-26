@@ -2,7 +2,7 @@
 #define _VORONOI_
 
 #include "algorithm/algorithm.h"
-#include "collisiondetection/collisiondetection.h"
+#include "toolbox/collisiondetection/collisiondetection.h"
 namespace yt {
 
 class Voronoi : public Algorithm
