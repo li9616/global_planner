@@ -52,6 +52,9 @@
 #include <flann/flann.hpp>
 
 #include "toolbox/collisiondetection/costmap_model.h"
+#include "singleton.h"
+#include <boost/shared_ptr.hpp>
+#include "toolbox/toolbox.h"
 
 //register this planner as a BaseGlobalPlanner plugin
 PLUGINLIB_EXPORT_CLASS(global_planner::YTPlanner, nav_core::BaseGlobalPlanner)
@@ -197,7 +200,8 @@ bool YTPlanner::makePlan(const geometry_msgs::PoseStamped& start, const geometry
     // }
     //////////////////////////////////////////////////////////////////
     yt_planner_->plan(start, goal, plan);
-
+    Singleton<Toolbox>::GetInstance()->start();
+    
     publishMidResult(yt_planner_->mid_result);
     publishGeneralizedVoronoi();
 
@@ -329,6 +333,7 @@ void YTPlanner::publishGeneralizedVoronoi()
         map_temp.info.origin.orientation.w = 1;
 
         unsigned char* vor_map = yt_planner_->getVoronoi()->getMapForShow();
+        //bug,如果没有路径结果会返回空指针
         std::cout << "YT: prepare to copy voronoi_graph" << std::endl;
         map_temp.data.resize(map_temp.info.width * map_temp.info.height);
         memcpy((void*)map_temp.data.data(), (void*)vor_map, sizeof(unsigned char) * map_temp.info.width * map_temp.info.height);

@@ -54,6 +54,7 @@
 #include "toolbox/collisiondetection/world_model.h"
 #include <costmap_2d/costmap_2d_ros.h>
 #include <base_local_planner/odometry_helper_ros.h>
+#include "singleton.h"
 
 namespace global_planner {
 
@@ -132,6 +133,7 @@ class YTPlanner : public nav_core::BaseGlobalPlanner {
         unsigned int start_x_, start_y_, end_x_, end_y_;
 
         float convert_offset_;
+        
 
         std::vector<geometry_msgs::Point> footprint_spec_;
 

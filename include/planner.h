@@ -82,8 +82,6 @@ class Planner {
 
   geometry_msgs::PoseStamped start;
   geometry_msgs::PoseStamped goal;
-  // /// A lookup table for configurations of the vehicle and their spatial occupancy enumeration
-  // Constants::config collisionLookup[Constants::headings * Constants::positions];
 
   //YT costmap相关
   costmap_2d::Costmap2D* costmap_;
@@ -110,8 +108,6 @@ class Planner {
   unsigned int gridmap_width_x_;
   unsigned int gridmap_height_y_;
   double gridmap_resolution_;//YT todo: 删除gridmap的实例
-
-
 
 
   yt::Algorithm *yt_alg_, *yt_alg_1;

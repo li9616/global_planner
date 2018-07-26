@@ -1,7 +1,6 @@
 #ifndef _DYNAMICVORONOI_H_
 #define _DYNAMICVORONOI_H_
 
-
 #include <stdlib.h>
 #include <stdio.h>
 #include <limits.h>
@@ -9,10 +8,11 @@
 #include <flann/flann.hpp>
 #include "toolbox/voronoi/bucketedqueue.h"
 #include "base_type/pose2d.h"
+#include "toolbox/plugin.h"
 
 namespace global_planner {
 //! A DynamicVoronoi object computes and updates a distance map and Voronoi diagram.
-class DynamicVoronoi {
+class DynamicVoronoi : public Plugin {
 
  public:
 

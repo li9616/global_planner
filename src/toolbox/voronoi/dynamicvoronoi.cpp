@@ -648,7 +648,7 @@ bool DynamicVoronoi::findPath(std::vector<std::pair<float, float> > *path,
         (closed)[x] = new bool[sizeY];
     }
 
-    for (unsigned int y = sizeY-1; y>=0; y--) {
+    for (int y = sizeY-1; y>=0; y--) {
         for (unsigned int x=0; x<sizeX; x++) {
             (closed)[x][y] = false;
         }
@@ -660,7 +660,7 @@ bool DynamicVoronoi::findPath(std::vector<std::pair<float, float> > *path,
     for (unsigned int x=0; x<sizeX; x++) {
         (action)[x] = new int[sizeY];
     }
-    for (unsigned int y=sizeY-1; y>=0; y--) {
+    for (int y=sizeY-1; y>=0; y--) {
         for (unsigned int x=0; x<sizeX; x++) {
             (action)[x][y] = -1;
         }

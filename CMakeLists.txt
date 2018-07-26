@@ -88,6 +88,7 @@ add_library(${PROJECT_NAME}
   src/toolbox/voronoi/bucketedqueue.cpp
   src/toolbox/toolbox.cpp
   src/toolbox/visual/visual.cpp
+  src/toolbox/plugin.cpp
   
   include/planner_core.h
   include/toolbox/collisiondetection/world_model.h
@@ -109,6 +110,8 @@ add_library(${PROJECT_NAME}
   include/planner.h
   include/toolbox/toolbox.h
   include/toolbox/visual/visual.h
+  include/toolbox/plugin.h
+  include/singleton.h
 
 )
 add_dependencies(${PROJECT_NAME} ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
@@ -132,6 +135,7 @@ add_executable(planner
   src/toolbox/voronoi/bucketedqueue.cpp
   src/toolbox/toolbox.cpp
   src/toolbox/visual/visual.cpp
+  src/toolbox/plugin.cpp
 )
 add_dependencies(planner ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 target_link_libraries(planner
@@ -139,7 +143,7 @@ target_link_libraries(planner
   ${catkin_LIBRARIES}
 )
 
-# set_target_properties(planner PROPERTIES COMPILE_FLAGS "-g")
+set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-g")
 
 install(TARGETS ${PROJECT_NAME} planner
   ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}

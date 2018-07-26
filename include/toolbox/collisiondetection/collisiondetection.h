@@ -6,19 +6,19 @@
 #include <costmap_2d/costmap_2d.h>
 #include <geometry_msgs/Point.h>
 #include "constants.h"
-// #include "lookup.h"
+
 #include "base_type/node2d.h"
 #include "base_type/pose2d.h"
 #include "toolbox/collisiondetection/world_model.h"
 #include "toolbox/collisiondetection/costmap_model.h"
-
+#include "toolbox/plugin.h"
 /*!
    \brief The CollisionDetection class determines whether a given configuration q of the robot will result in a collision with the environment.
 
    It is supposed to return a boolean value that returns true for collisions and false in the case of a safe node.
 */
 
-class CollisionDetection {
+class CollisionDetection : public global_planner::Plugin{
   public:
   //YT 这个原来的栅格地图的匹配肯定不能用，所以先删掉，实现两个部分：
   //YT 简单的碰撞检测就是在configuration space 对机器人几何中心所在网格进行查表

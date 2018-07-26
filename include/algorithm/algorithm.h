@@ -1,19 +1,12 @@
 #ifndef ALGORITHM_H
 #define ALGORITHM_H
 
-// #include <ompl/base/spaces/ReedsSheppStateSpace.h>
-// #include <ompl/base/spaces/DubinsStateSpace.h>
-// #include <ompl/base/spaces/SE2StateSpace.h>
-// #include <ompl/base/State.h>
-
-// typedef ompl::base::SE2StateSpace::StateType State;
-
 #include "base_type/pose2d.h"
 #include "base_type/node2d.h"
 #include "toolbox/collisiondetection/collisiondetection.h"
 #include "base_type/primitive.h"
 #include "toolbox/voronoi/dynamicvoronoi.h"
-
+#include <ros/ros.h>
 
 namespace yt {
 
@@ -54,7 +47,7 @@ class Algorithm {
 protected:
   std::vector<primitive> motion_primitive_;
 
-
+  ros::NodeHandle private_nh;
 
 };
 }//namespace

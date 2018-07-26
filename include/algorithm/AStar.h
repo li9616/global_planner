@@ -22,11 +22,6 @@ virtual bool plan(global_planner::Pose2D& start,
   // virtual bool updateH(global_planner::Pose2D& start, const global_planner::Pose2D& goal, global_planner::Node2D* nodes2D, int width, int height, CollisionDetection& configurationSpace);
 
 
-
-  
-
-
-
 };
 
 
