@@ -9,7 +9,7 @@ bool yt::Voronoi::plan(global_planner::Pose2D& start_temp,
                     int width, 
                     int height, 
                     CollisionDetection* configurationSpace, 
-                    global_planner::DynamicVoronoi* voronoiDiagram, 
+                    boost::shared_ptr<global_planner::DynamicVoronoi> voronoiDiagram, 
                     std::vector<global_planner::Pose2D>& plan){
 
 

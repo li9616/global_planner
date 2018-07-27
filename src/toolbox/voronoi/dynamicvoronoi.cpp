@@ -4,10 +4,20 @@
 #include <iostream>
 #include <ros/ros.h>
 #include <utility>
+#include <nav_msgs/OccupancyGrid.h>
+#include <costmap_2d/costmap_2d_ros.h>
+#include <string>
 
 using namespace global_planner;
 
-DynamicVoronoi::DynamicVoronoi() {
+DynamicVoronoi::DynamicVoronoi(costmap_2d::Costmap2D* costmap, int cell_divider, std::string frame_id):
+Plugin(costmap, cell_divider, frame_id)
+{
+  
+  ros::NodeHandle private_nh("~");
+
+  generalized_voronoi_pub_ = private_nh.advertise<nav_msgs::OccupancyGrid>("GVD/map", 1);
+
   sqrt2 = sqrt(2.0);
   data = NULL;
   gridMap = NULL;
@@ -401,6 +411,7 @@ voronoi_point_.clear();
   }
   std::cout << "YT: check the size of voronoi_point_: " << voronoi_point_.size() << std::endl;
   fclose(F);
+  publishGeneralizedVoronoi();
 }
 
 
@@ -808,3 +819,37 @@ bool DynamicVoronoi::findPath(std::vector<std::pair<float, float> > *path,
 
 //   return pose;
 // }
+
+
+
+
+void DynamicVoronoi::publishGeneralizedVoronoi()
+{
+        nav_msgs::OccupancyGrid map_temp;
+        map_temp.header.stamp = ros::Time::now();
+        map_temp.header.frame_id = frame_id_;//YT 这里等参数可以传进来了就改用frame_id_;
+        map_temp.info.resolution = costmap_->getResolution() / cell_divider_;
+        map_temp.info.width = costmap_->getSizeInCellsX() * cell_divider_;
+        map_temp.info.height = costmap_->getSizeInCellsY() * cell_divider_;
+        map_temp.info.origin.position.x = costmap_->getOriginX();
+        map_temp.info.origin.position.y = costmap_->getOriginY();
+        map_temp.info.origin.position.z = 0;
+        map_temp.info.origin.orientation.x = 0;
+        map_temp.info.origin.orientation.y = 0;
+        map_temp.info.origin.orientation.z = 0;
+        map_temp.info.origin.orientation.w = 1;
+
+        unsigned char* vor_map = NULL;
+
+        vor_map = getMapForShow();
+        //bug,如果没有路径结果会返回空指针
+        if(vor_map != NULL){
+            std::cout << "YT: prepare to copy voronoi_graph" << std::endl;
+            map_temp.data.resize(map_temp.info.width * map_temp.info.height);
+            memcpy((void*)map_temp.data.data(), (void*)vor_map, sizeof(unsigned char) * map_temp.info.width * map_temp.info.height);
+            std::cout << "YT: copy voronoi_graph finished" << std::endl;
+            generalized_voronoi_pub_.publish(map_temp);
+        }
+  
+}
+

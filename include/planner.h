@@ -18,7 +18,8 @@
 #include "toolbox/voronoi/dynamicvoronoi.h"
 #include "algorithm/algorithm.h"
 #include "base_type/pose2d.h"
-// #include "lookup.h"
+#include "boost/shared_ptr.hpp"
+#include <string>
 
 
 namespace global_planner {
@@ -37,7 +38,8 @@ class Planner {
           std::vector<geometry_msgs::Point> footprint_spec, 
           unsigned int cell_divider, 
           bool using_voronoi, 
-          bool lazy_replanning);
+          bool lazy_replanning, 
+          std::string frame_id);
 
   ~Planner();
 
@@ -73,7 +75,7 @@ class Planner {
   
   void visualizeBinMap(const char* filename);
   
-  DynamicVoronoi* getVoronoi();
+  boost::shared_ptr<DynamicVoronoi> getVoronoi();
 
   nav_msgs::Path path_;
 
@@ -117,10 +119,11 @@ class Planner {
   std::vector<geometry_msgs::Point> footprint_spec_;
 
   //YT voronoi图plugin相关
-  DynamicVoronoi* voronoiDiagram;
-
+  // DynamicVoronoi* voronoiDiagram;
+  boost::shared_ptr<DynamicVoronoi> voronoiDiagram;
 
   bool using_voronoi_;
+  std::string frame_id_;
 };
 }
 #endif // PLANNER_H

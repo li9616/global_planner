@@ -7,3 +7,8 @@ void Toolbox::start()
 {
     ROS_INFO("YT");
 }
+
+void Toolbox::add(Plugin::Ptr p)
+{
+    ROS_INFO("YT: Toolbox::add()");
+}

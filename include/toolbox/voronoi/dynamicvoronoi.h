@@ -9,6 +9,8 @@
 #include "toolbox/voronoi/bucketedqueue.h"
 #include "base_type/pose2d.h"
 #include "toolbox/plugin.h"
+#include "costmap_2d/costmap_2d_ros.h"
+#include <string>
 
 namespace global_planner {
 //! A DynamicVoronoi object computes and updates a distance map and Voronoi diagram.
@@ -16,7 +18,7 @@ class DynamicVoronoi : public Plugin {
 
  public:
 
-  DynamicVoronoi();
+  DynamicVoronoi(costmap_2d::Costmap2D* costmap, int cell_divider, std::string frame_id);
   ~DynamicVoronoi();
 
   //! Initialization with an empty map
@@ -56,6 +58,9 @@ class DynamicVoronoi : public Plugin {
   bool getPathInVoronoi(int start_x, int start_y, int goal_x, int goal_y, std::vector<global_planner::Pose2D>& plan);//YT based on cell of gridmap
 
   // global_planner::Pose2D getNearestPointOnVor(int cell_x, int cell_y);
+
+  void publishGeneralizedVoronoi();
+
 
   // was private, changed to public for obstX, obstY
  public:
@@ -111,6 +116,12 @@ class DynamicVoronoi : public Plugin {
   // dataCell** getData(){ return data; }
 
 private:
+
+    ros::Publisher generalized_voronoi_pub_;
+
+    // int cell_divider_;
+    
+
     std::vector<std::pair<float, float> > path1_;
     std::vector<std::pair<float, float> > path2_;
     std::vector<std::pair<float, float> > path3_;

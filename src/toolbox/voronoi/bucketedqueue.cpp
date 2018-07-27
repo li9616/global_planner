@@ -77,3 +77,4 @@ void BucketPrioQueue::initSqrIndices() {
   numBuckets = count;
   //    std::cout << "BUCKETQUEUE Done with building the index arrays.\n";
 }
+

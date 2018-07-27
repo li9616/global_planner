@@ -8,11 +8,11 @@ template <typename T>
 class Singleton{
   public:
     template<typename ...Args>
-    static std::shared_ptr<T> GetInstance(Args&&... args) {
+    static boost::shared_ptr<T> GetInstance(Args&&... args) {
         if (!m_pSington) {
-            std::lock_guard<std::mutex> gLock(m_Mutex);
+            boost::lock_guard<boost::mutex> gLock(m_Mutex);
             if (m_pSington == nullptr) {
-                m_pSington = std::make_shared<T>(std::forward<Args>(args)...);
+                m_pSington = boost::make_shared<T>(boost::forward<Args>(args)...);
             }
         }
         return m_pSington;
@@ -30,15 +30,15 @@ class Singleton{
     Singleton<T>& operator=(const Singleton<T>&) = delete;
     ~Singleton();
 
-    static std::shared_ptr<T> m_pSington;
-    static std::mutex m_Mutex;
+    static boost::shared_ptr<T> m_pSington;
+    static boost::mutex m_Mutex;
 };
 
 template <typename T>
-std::shared_ptr<T> Singleton<T>::m_pSington = nullptr;
+boost::shared_ptr<T> Singleton<T>::m_pSington = nullptr;
 
 template <typename T>
-std::mutex Singleton<T>::m_Mutex;
+boost::mutex Singleton<T>::m_Mutex;
 
 
 #endif

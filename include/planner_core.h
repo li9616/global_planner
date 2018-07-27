@@ -109,7 +109,7 @@ class YTPlanner : public nav_core::BaseGlobalPlanner {
 
         void publishFootprint();
 
-        void publishGeneralizedVoronoi();
+        // void publishGeneralizedVoronoi();
 
 
     protected:

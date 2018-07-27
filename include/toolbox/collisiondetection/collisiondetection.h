@@ -25,7 +25,8 @@ class CollisionDetection : public global_planner::Plugin{
   //YT 复杂的碰撞检测先读取制作，机器人footprint，在costmap_2d框架下进行碰撞检测
 
   CollisionDetection(costmap_2d::Costmap2D* costmap, unsigned int cell_divider_, std::vector<geometry_msgs::Point> footprint_spec, 
-  double origin_position_x, double origin_position_y, double gridmap_resolution)
+  double origin_position_x, double origin_position_y, double gridmap_resolution):
+  Plugin(costmap)
   {
     origin_position_x_ = origin_position_x;
     origin_position_y_ = origin_position_y;
@@ -72,12 +73,7 @@ class CollisionDetection : public global_planner::Plugin{
       return true;    
     }
   }
-  // bool isTraversableForRotation(const global_planner::Pose2D* pose)
-  // {
-  //   const unsigned char divider = 2;
-  //   float x, y, theta;
 
-  // }
 
   bool isTraversableForMovement(const global_planner::Node2D* start, const global_planner::Node2D* goal){
     const unsigned char divider = 2;
@@ -120,25 +116,6 @@ class CollisionDetection : public global_planner::Plugin{
 
   }
 
-  /*!
-     \brief Calculates the cost of the robot taking a specific configuration q int the World W
-     \param x the x position
-     \param y the y position
-     \param t the theta angle
-     \return the cost of the configuration q of W(q)
-     \todo needs to be implemented correctly
-  */
-  float configurationCost(float x, float y, float t) {return 0;}
-
-  /*!
-     \brief Tests whether the configuration q of the robot is in C_free
-     \param x the x position
-     \param y the y position
-     \param t the theta angle
-     \return true if it is in C_free, else false
-     \YT 检测是否碰撞障碍物的关键函数
-  */
-  // bool configurationTest(float x, float y, float t);
 
   /*!
      \brief updates the grid with the world map
@@ -154,7 +131,6 @@ class CollisionDetection : public global_planner::Plugin{
        */  
 //YT 查找机器人可达性的接口函数，footprint直接存在collisiondetection里面，不需要当成参数传进去
   double footprintCost(double x_i, double y_i, double theta_i);
-
 
 
 
@@ -183,8 +159,6 @@ class CollisionDetection : public global_planner::Plugin{
  private:
   /// The occupancy grid
   nav_msgs::OccupancyGrid::Ptr grid;
-  // /// The collision lookup table
-  // global_planner::Constants::config collisionLookup[global_planner::Constants::headings * global_planner::Constants::positions];
 
   costmap_2d::Costmap2D* costmap_;
 

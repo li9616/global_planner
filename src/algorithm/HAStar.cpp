@@ -31,19 +31,6 @@ bool isOnGrid(const global_planner::Pose2D pose, const int width, const int heig
   return pose.getX() >= 0 && pose.getX() < width && pose.getY() >= 0 && pose.getY() < height && (int)(pose.getT() / global_planner::Constants::deltaHeadingRad) >= 0 && (int)(pose.getT() / global_planner::Constants::deltaHeadingRad) < global_planner::Constants::headings;
 }
 
-//###################################################
-//                                        3D A*
-//###################################################
-// global_planner::Pose2D* Algorithm::HAStar::plan(global_planner::Pose2D& start,
-//                                const global_planner::Pose2D& goal,
-//                                global_planner::Pose2D* nodes3D,
-//                                global_planner::Node2D* nodes2D,
-//                                int width,
-//                                int height,
-//                                HybridAStar::CollisionDetection& configurationSpace
-//                                ) {
-
-//////////////////////////////////////////
 
 bool yt::HAStar::plan(global_planner::Pose2D& start,
                                const global_planner::Pose2D& goal,
@@ -52,7 +39,7 @@ bool yt::HAStar::plan(global_planner::Pose2D& start,
                                int width,
                                int height,
                                CollisionDetection* configurationSpace, 
-                               global_planner::DynamicVoronoi* voronoiDiagram,
+                               boost::shared_ptr<global_planner::DynamicVoronoi> voronoiDiagram,
                                std::vector<global_planner::Pose2D>& plan) {
 
 //////////////////////////////////////////
@@ -198,30 +185,6 @@ std::cout<<"openlist is empty"<<std::endl;
 //###################################################
 void updateH(global_planner::Pose2D& start, const global_planner::Pose2D& goal) {
 
-  // float reedsSheppCost = 0;
-  // float twoDoffset = 0;
-
-  // // if twoD heuristic is activated determine shortest path
-  // // unconstrained with obstacles
-  // if ( !nodes2D[(int)start.getY() * width + (int)start.getX()].isDiscovered()) {
-
-  //   // create a 2d start node
-  //   Node2D start2d(start.getX(), start.getY(), 0, 0, nullptr);
-  //   // create a 2d goal node
-  //   Node2D goal2d(goal.getX(), goal.getY(), 0, 0, nullptr);
-
-  //   // run 2d astar and return the cost of the cheapest path for that node
-  //   nodes2D[(int)start.getY() * width + (int)start.getX()].setG(aStar(goal2d, start2d, nodes2D, width, height, configurationSpace));
-
-  // }
-
-  //   // offset for same node in cell
-  //   twoDoffset = sqrt(((start.getX() - (long)start.getX()) - (goal.getX() - (long)goal.getX())) * ((start.getX() - (long)start.getX()) - (goal.getX() - (long)goal.getX())) +
-  //                     ((start.getY() - (long)start.getY()) - (goal.getY() - (long)goal.getY())) * ((start.getY() - (long)start.getY()) - (goal.getY() - (long)goal.getY())));
-  //   twoDCost = nodes2D[(int)start.getY() * width + (int)start.getX()].getG() - twoDoffset;
-
-  // // return the maximum of the heuristics, making the heuristic admissable
-  // start.setH(std::max(reedsSheppCost, std::max(dubinsCost, twoDCost)));
   double H;
   H = hypot(start.getX() - goal.getX(),   start.getY() - goal.getY()  );
   start.setH(H);

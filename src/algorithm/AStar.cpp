@@ -40,7 +40,7 @@ bool yt::AStar::plan(global_planner::Pose2D& start_temp,
                     int width, 
                     int height, 
                     CollisionDetection* configurationSpace, 
-                    global_planner::DynamicVoronoi* voronoiDiagram, 
+                    boost::shared_ptr<global_planner::DynamicVoronoi> voronoiDiagram, 
                     std::vector<global_planner::Pose2D>& plan){
 
   ////////////////////////////////////
@@ -53,24 +53,16 @@ bool yt::AStar::plan(global_planner::Pose2D& start_temp,
 
 
 
-
-
   start.setX(start_temp.getX());
   start.setY(start_temp.getY());
   goal.setX(goal_temp.getX());
   goal.setY(goal_temp.getY());
 
-
-
-  // //YT 检查机器人原点的costmap可达性
-  // std::cout << "YT: reachability of startpoint: " << configurationSpace->isTraversable(&start) << std::endl;
-
-
   //////////////////////////////////////
   // PREDECESSOR AND SUCCESSOR INDEX
   int iPred, iSucc;
   float newG;
-
+  int dir = 8;
   // reset the open and closed list
   for (int i = 0; i < width * height; ++i) {
     nodes2D[i].reset();
@@ -137,7 +129,7 @@ bool yt::AStar::plan(global_planner::Pose2D& start_temp,
       else {
         // _______________________________
         // CREATE POSSIBLE SUCCESSOR NODES
-        for (int i = 0; i < global_planner::Node2D::dir; i++) {
+        for (int i = 0; i < dir; i++) {
           // create possible successor
           nSucc = nPred->createSuccessor(i);
 
@@ -181,12 +173,7 @@ bool yt::AStar::plan(global_planner::Pose2D& start_temp,
               delete nSucc;
 
             } else { delete nSucc; }
-          } 
-          else { 
-            // std::cout << "YT: isOnGrid(*nSucc, width, height)" << isOnGrid(*nSucc, width, height) << std::endl;
-            // std::cout << "YT: configurationSpace->isTraversable(nSucc)" << configurationSpace->isTraversable(nSucc) << std::endl;
-            // std::cout << "YT: !nodes2D[iSucc].isClosed" << !nodes2D[iSucc].isClosed() << std::endl;
-            delete nSucc; }
+          } else { delete nSucc; }
         }
       }
     }

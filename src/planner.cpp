@@ -6,6 +6,7 @@
 #include "algorithm/AStar.h"
 #include "algorithm/Voronoi.h"
 #include "tf/transform_datatypes.h"
+#include "singleton.h"
 
 // using namespace HybridAStar;
 //###################################################
@@ -16,10 +17,12 @@ global_planner::Planner::Planner(costmap_2d::Costmap2D* costmap,
                                  std::vector<geometry_msgs::Point> footprint_spec, 
                                  unsigned int cell_divider, 
                                  bool using_voronoi, 
-                                 bool lazy_replanning_):
-  costmap_(costmap),footprint_spec_(footprint_spec)
+                                 bool lazy_replanning_, 
+                                 std::string frame_id):
+  costmap_(costmap),footprint_spec_(footprint_spec), frame_id_(frame_id)
 {
-
+  
+  voronoiDiagram = NULL;
 
   using_voronoi_ = using_voronoi;
   cell_divider_ = cell_divider;
@@ -156,18 +159,28 @@ std::cout << "YT start making plan planner.cpp 137" << std::endl;
 
   if(using_voronoi_)
   {
-    voronoiDiagram = new DynamicVoronoi();
+    voronoiDiagram = Singleton<DynamicVoronoi>::GetInstance(costmap_, cell_divider_, frame_id_);
+
+
+    // voronoiDiagram = new DynamicVoronoi(costmap_, cell_divider_);
+    // voronoiDiagram = Singleton<DynamicVoronoi>::GetInstance(costmap_, cell_divider_);
     voronoiDiagram->initializeMap(gridmap_width_x_, gridmap_height_y_, binMap_not_);
     voronoiDiagram->update();
     voronoiDiagram->prune();
+    
+    // Singleton<DynamicVoronoi>::GetInstance(costmap_, cell_divider_)->initializeMap(gridmap_width_x_, gridmap_height_y_, binMap_not_);
+    // Singleton<DynamicVoronoi>::GetInstance(costmap_, cell_divider_)->update();
+    // Singleton<DynamicVoronoi>::GetInstance(costmap_, cell_divider_)->prune();
+
     std::cout << "YT: start saving voronoi graph ...";
     voronoiDiagram->visualize();
+    
+    // Singleton<DynamicVoronoi>::GetInstance(costmap_, cell_divider_)->visualize();
     std::cout << "end!" << std::endl;
   }
 
   configurationSpace = new CollisionDetection(costmap_, cell_divider_, footprint_spec_, origin_position_x_, origin_position_y_, gridmap_resolution_);
   // std::cout << "YT: planner.cpp line 163" << std::endl;
-
 
     // ___________________________
     // LISTS ALLOWCATED ROW MAJOR ORDER
@@ -240,8 +253,8 @@ std::cout << "YT start making plan planner.cpp 137" << std::endl;
     {
       std::cout << "YT: no result_path" << std::endl;
       
-    if(using_voronoi_){
-      delete voronoiDiagram;
+    if(voronoiDiagram!= NULL){
+      // delete voronoiDiagram;
     }
 
     delete [] nodes3D;
@@ -309,7 +322,7 @@ std::cout << "YT start making plan planner.cpp 137" << std::endl;
 //////////////////////////////////////////////////////////////////////////
 
 if(using_voronoi_){
-  delete voronoiDiagram;
+  // delete voronoiDiagram;
 }
 
     delete [] nodes3D;
@@ -331,7 +344,7 @@ void global_planner::Planner::tracePath(const Pose2D* node, int i, std::vector<P
   tracePath(node->getPred(), i, path);
 }
 
-global_planner::DynamicVoronoi* global_planner::Planner::getVoronoi()
+boost::shared_ptr<global_planner::DynamicVoronoi> global_planner::Planner::getVoronoi()
 {
   return voronoiDiagram;
 }
@@ -362,3 +375,4 @@ void global_planner::Planner::visualizeBinMap(const char* filename)
   }
   fclose(F);
 }
+

@@ -90,15 +90,15 @@ class Pose2D {
   /// Creates a successor in the continous space.
   Pose2D* createSuccessor(const int i);
 
-  // CONSTANT VALUES
-  /// Number of possible directions
-  static const int dir;
-  /// Possible movements in the x direction
-  static const float dx[];
-  /// Possible movements in the y direction
-  static const float dy[];
-  /// Possible movements regarding heading theta
-  static const float dt[];
+  // // CONSTANT VALUES
+  // /// Number of possible directions
+  // static const int dir;
+  // /// Possible movements in the x direction
+  // static const float dx[];
+  // /// Possible movements in the y direction
+  // static const float dy[];
+  // /// Possible movements regarding heading theta
+  // static const float dt[];
 
  private:
   /// the x position

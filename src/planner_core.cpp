@@ -116,7 +116,7 @@ void YTPlanner::initialize(std::string name, costmap_2d::Costmap2DROS* costmap_r
 
         ROS_WARN("YT: check the size of footprint_spec_ at the beginning of the global_planner: %d", footprint_spec_.size());
 
-        yt_planner_ = new global_planner::Planner(costmap_, footprint_spec_, cell_divider_, using_voronoi_, lazy_replanning_);
+        yt_planner_ = new global_planner::Planner(costmap_, footprint_spec_, cell_divider_, using_voronoi_, lazy_replanning_, frame_id_);
 
         initialized_ = true;
         ROS_WARN("YT: global_planner has been initialized");
@@ -203,7 +203,6 @@ bool YTPlanner::makePlan(const geometry_msgs::PoseStamped& start, const geometry
     Singleton<Toolbox>::GetInstance()->start();
     
     publishMidResult(yt_planner_->mid_result);
-    publishGeneralizedVoronoi();
 
     for(unsigned int i = 0; i < plan.size(); i++)
     {
@@ -313,43 +312,6 @@ void YTPlanner::publishFootprint()
     footprintpath.header.stamp = ros::Time::now();
 
     footprint_spec_pub_.publish(footprintpath);
-}
-
-void YTPlanner::publishGeneralizedVoronoi()
-{
-    if(using_voronoi_){
-        nav_msgs::OccupancyGrid map_temp;
-        map_temp.header.stamp = ros::Time::now();
-        map_temp.header.frame_id = frame_id_;
-        map_temp.info.resolution = costmap_->getResolution() / cell_divider_;
-        map_temp.info.width = costmap_->getSizeInCellsX() * cell_divider_;
-        map_temp.info.height = costmap_->getSizeInCellsY() * cell_divider_;
-        map_temp.info.origin.position.x = costmap_->getOriginX();
-        map_temp.info.origin.position.y = costmap_->getOriginY();
-        map_temp.info.origin.position.z = 0;
-        map_temp.info.origin.orientation.x = 0;
-        map_temp.info.origin.orientation.y = 0;
-        map_temp.info.origin.orientation.z = 0;
-        map_temp.info.origin.orientation.w = 1;
-
-        unsigned char* vor_map = NULL;
-
-        vor_map = yt_planner_->getVoronoi()->getMapForShow();
-        //bug,如果没有路径结果会返回空指针
-        if(vor_map != NULL){
-            std::cout << "YT: prepare to copy voronoi_graph" << std::endl;
-            map_temp.data.resize(map_temp.info.width * map_temp.info.height);
-            memcpy((void*)map_temp.data.data(), (void*)vor_map, sizeof(unsigned char) * map_temp.info.width * map_temp.info.height);
-            std::cout << "YT: copy voronoi_graph finished" << std::endl;
-            generalized_voronoi_pub_.publish(map_temp);
-        }
-
-
-    }
-    else{
-        ROS_ERROR("YT: no voronoi plugin in global_planner");
-        return;
-    }
 }
 
 
