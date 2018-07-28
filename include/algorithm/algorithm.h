@@ -7,6 +7,8 @@
 #include "base_type/primitive.h"
 #include "toolbox/voronoi/dynamicvoronoi.h"
 #include <ros/ros.h>
+#include <string>
+
 
 namespace yt {
 
@@ -16,7 +18,7 @@ namespace yt {
 class Algorithm {
  public:
   /// The deault constructor
-  Algorithm() {}
+  Algorithm(std::string frame_id, double origin_position_x, double origin_position_y, double gridmap_resolution);
 
   /*!
      \brief The heart of the planner, the main algorithm starting the search for a collision free and drivable path.
@@ -41,14 +43,21 @@ class Algorithm {
                     std::vector<global_planner::Pose2D>& plan) = 0;
   //  virtual bool updateH(global_planner::Pose2D& start, const global_planner::Pose2D& goal, global_planner::Node2D* nodes2D, int width, int height, CollisionDetection& configurationSpace);
 
+  virtual void publishMidResult(const std::vector<global_planner::Pose2D>& plan);
 
-  std::vector<global_planner::Pose2D> mid_result;//YT 存放搜索的中间结果，格式是Pose2D，在planner外再转成PoseArray去显示
+  std::vector<global_planner::Pose2D> mid_result_;//YT 存放搜索的中间结果，格式是Pose2D，在planner外再转成PoseArray去显示
 
 protected:
   std::vector<primitive> motion_primitive_;
 
-  ros::NodeHandle private_nh;
+  ros::Publisher mid_result_pub_;
 
+  double origin_position_x_;
+  double origin_position_y_;
+
+  double gridmap_resolution_;
+
+  std::string frame_id_;
 };
 }//namespace
 #endif // ALGORITHM_H

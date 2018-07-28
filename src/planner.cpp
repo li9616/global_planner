@@ -55,21 +55,9 @@ global_planner::Planner::Planner(costmap_2d::Costmap2D* costmap,
   binMap_not_ = new bool*[width];
 
   for (unsigned int x = 0; x < width; x++) 
-  { binMap_[x] = new bool[height]; binMap_not_[x] = new bool[height];}
+  { binMap_[x] = new bool[height]; 
+  binMap_not_[x] = new bool[height];}
  
-  // if(using_voronoi_)
-  // {
-
-  //    for (unsigned int x = 0; x < gridmap_width_x_; ++x) {
-  //       for (unsigned int y = 0; y < gridmap_height_y_; ++y) {
-  //     //YT 如果是true说明是FREE， false是障碍物
-  //         binMap_[x][y] = (*(costmap_->getCharMap() + (unsigned int)(y/cell_divider_) * costmap_->getSizeInCellsX() + (unsigned int)(x/cell_divider_)) == 0) ? true : false;
-  //         binMap_not_[x][y] = !binMap_[x][y];
-  //       }
-  //     }
-
-
-  // }
 
 }
 
@@ -167,10 +155,7 @@ std::cout << "YT start making plan planner.cpp 137" << std::endl;
     voronoiDiagram->initializeMap(gridmap_width_x_, gridmap_height_y_, binMap_not_);
     voronoiDiagram->update();
     voronoiDiagram->prune();
-    
-    // Singleton<DynamicVoronoi>::GetInstance(costmap_, cell_divider_)->initializeMap(gridmap_width_x_, gridmap_height_y_, binMap_not_);
-    // Singleton<DynamicVoronoi>::GetInstance(costmap_, cell_divider_)->update();
-    // Singleton<DynamicVoronoi>::GetInstance(costmap_, cell_divider_)->prune();
+    // voronoiDiagram->setupKDTree();
 
     std::cout << "YT: start saving voronoi graph ...";
     voronoiDiagram->visualize();
@@ -220,15 +205,15 @@ std::cout << "YT start making plan planner.cpp 137" << std::endl;
     // CLEAR THE PATH
     path_.poses.clear();
 
-    yt_alg_ = new yt::AStar();
+    yt_alg_ = new yt::AStar(frame_id_, origin_position_x_, origin_position_y_, gridmap_resolution_);
     std::cout << "YT: planner.cpp line 213" << std::endl;
-    yt_alg_1 = new yt::Voronoi(using_voronoi_);
+    yt_alg_1 = new yt::Voronoi(frame_id_, origin_position_x_, origin_position_y_, gridmap_resolution_, using_voronoi_);
     std::cout << "YT: planner.cpp line 215" << std::endl;
     
     std::vector<Pose2D> result_path,result_path_1;
     result_path.clear();
     result_path_1.clear();
-    // ROS_INFO("YT: planning start, planner.cpp 210");
+
     //YT nStart和nGoal都是以gridmap原点为原点、gridmap分辨率为单位1的坐标点，生成的结果也是基于gridmap的
     //YT 只将CollisionDetection的指针传进去，实际上CollisionDetection是建立在global_planner下的，而不是在algorithm类中
     yt_alg_->plan(nStart, nGoal, nodes3D, nodes2D, width, height, configurationSpace, voronoiDiagram, result_path);
@@ -237,16 +222,16 @@ std::cout << "YT start making plan planner.cpp 137" << std::endl;
     // ROS_INFO("YT: planning finished");
 
 ////////////////保存结果/////////////////////////////////////////////////////////////
-    mid_result.poses.resize(yt_alg_->mid_result.size());
+    // mid_result.poses.resize(yt_alg_->mid_result.size());
 
-    for(unsigned int i = 0;i< yt_alg_->mid_result.size();i++)
-    {
-      //YT 如果点有方向那么就按照设定方向进行显示，如果没有方向那么默认朝向(0, 0, 0, 1)
-        mid_result.poses.at(i).position.x = yt_alg_->mid_result.at(i).getX() * gridmap_resolution_ + origin_position_x_;
-        mid_result.poses.at(i).position.y = yt_alg_->mid_result.at(i).getY() * gridmap_resolution_ + origin_position_y_;
-        tf::Quaternion q = tf::createQuaternionFromYaw(yt_alg_->mid_result.at(i).getT());
-        tf::quaternionTFToMsg(q, mid_result.poses.at(i).orientation);
-    }
+    // for(unsigned int i = 0;i< yt_alg_->mid_result.size();i++)
+    // {
+    //   //YT 如果点有方向那么就按照设定方向进行显示，如果没有方向那么默认朝向(0, 0, 0, 1)
+    //     mid_result.poses.at(i).position.x = yt_alg_->mid_result.at(i).getX() * gridmap_resolution_ + origin_position_x_;
+    //     mid_result.poses.at(i).position.y = yt_alg_->mid_result.at(i).getY() * gridmap_resolution_ + origin_position_y_;
+    //     tf::Quaternion q = tf::createQuaternionFromYaw(yt_alg_->mid_result.at(i).getT());
+    //     tf::quaternionTFToMsg(q, mid_result.poses.at(i).orientation);
+    // }
 /////////////////////////////////////////////
     // ROS_ERROR("YT: yt_alg_ has finished, planner.cpp line 195");
     if(result_path.size() == 0)

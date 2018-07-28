@@ -7,6 +7,8 @@
 #include <nav_msgs/OccupancyGrid.h>
 #include <costmap_2d/costmap_2d_ros.h>
 #include <string>
+#include <flann/flann.hpp>
+#include <flann/util/matrix.h>
 
 using namespace global_planner;
 
@@ -853,3 +855,37 @@ void DynamicVoronoi::publishGeneralizedVoronoi()
   
 }
 
+// void DynamicVoronoi::setupKDTree()
+// {
+//   int N = voronoi_point_.size();
+//   int dim = 2;
+  
+//   float *my_dataset = new float[N* dim];//YT 所有的数据点
+//   float *my_query = new float[dim];//YT 需要进行检索的目标点
+
+
+//   // voronoi_point_.
+//   for(unsigned int i = 0; i < N; i++)
+//   {
+//     my_dataset[2 * i + 0] = voronoi_point_.at(i).first;
+//     my_dataset[2 * i + 1] = voronoi_point_.at(i).second;
+//   }
+
+
+//   std::vector<int> k_indice(1);
+//   std::vector<float> k_distance(1);
+
+
+//   flann::Matrix<float> dataset = flann::Matrix<float>(my_dataset, N, dim);
+//   flann::Matrix<float> queryset = flann::Matrix<float>(my_query, 1, dim);
+
+
+//   flann::Index<flann::L2<float> > index(dataset, flann::KDTreeIndexParams(10));
+//   index.buildIndex();
+
+//   flann::Matrix<int> indices_mat(&k_indice[0], 1, 1);
+//   flann::Matrix<float> dist_mat(&k_distance[0], 1, 1);
+  
+//   index.knnSearch(queryset, indices_mat, dist_mat, 1, flann::SearchParams(15));
+//   std::cout << "YT: nearest point: (" << my_dataset[k_indice[0] * 2 + 0] << ", " << my_dataset[k_indice[0] * 2 + 1] << ")"<< std::endl;
+// }

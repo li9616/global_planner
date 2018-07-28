@@ -105,18 +105,15 @@ class YTPlanner : public nav_core::BaseGlobalPlanner {
 
         void publishPlan(const std::vector<geometry_msgs::PoseStamped>& path);
 
-        void publishMidResult(geometry_msgs::PoseArray& mid_result);
-
-        void publishFootprint();
-
-        // void publishGeneralizedVoronoi();
+        // void publishMidResult(geometry_msgs::PoseArray& mid_result);
 
 
     protected:
         costmap_2d::Costmap2DROS* costmap_ros_;
         costmap_2d::Costmap2D* costmap_;
         std::string frame_id_;
-        ros::Publisher plan_pub_, mid_result_pub_, footprint_spec_pub_, generalized_voronoi_pub_, carpose_pub_;
+        ros::Publisher plan_pub_, footprint_spec_pub_, carpose_pub_;
+        // ros::Publisher mid_result_pub_;
         bool initialized_, allow_unknown_;
 
     private:

@@ -60,7 +60,7 @@ class DynamicVoronoi : public Plugin {
   // global_planner::Pose2D getNearestPointOnVor(int cell_x, int cell_y);
 
   void publishGeneralizedVoronoi();
-
+  // void setupKDTree();
 
   // was private, changed to public for obstX, obstY
  public:

@@ -85,9 +85,8 @@ void YTPlanner::initialize(std::string name, costmap_2d::Costmap2DROS* costmap_r
         frame_id_ = frame_id;
 
         plan_pub_ = private_nh.advertise<nav_msgs::Path>("plan", 1);
-        mid_result_pub_ = private_nh.advertise<geometry_msgs::PoseArray>("mid_result", 1);
+        // mid_result_pub_ = private_nh.advertise<geometry_msgs::PoseArray>("mid_result", 1);
         footprint_spec_pub_ = private_nh.advertise<geometry_msgs::Point>("footprint_spec_", 1);
-        generalized_voronoi_pub_ = private_nh.advertise<nav_msgs::OccupancyGrid>("generalized_voronoi_graph", 1);
         carpose_pub_ = private_nh.advertise<visualization_msgs::Marker>("carpose",1);
 
         private_nh.param("allow_unknown", allow_unknown_, true);//YT 将地图上没有的空间都视为自由空间
@@ -114,7 +113,7 @@ void YTPlanner::initialize(std::string name, costmap_2d::Costmap2DROS* costmap_r
 
         footprint_spec_ = costmap_ros->getRobotFootprint();
 
-        ROS_WARN("YT: check the size of footprint_spec_ at the beginning of the global_planner: %d", footprint_spec_.size());
+        // ROS_WARN("YT: check the size of footprint_spec_ at the beginning of the global_planner: %d", footprint_spec_.size());
 
         yt_planner_ = new global_planner::Planner(costmap_, footprint_spec_, cell_divider_, using_voronoi_, lazy_replanning_, frame_id_);
 
@@ -202,7 +201,7 @@ bool YTPlanner::makePlan(const geometry_msgs::PoseStamped& start, const geometry
     yt_planner_->plan(start, goal, plan);
     Singleton<Toolbox>::GetInstance()->start();
     
-    publishMidResult(yt_planner_->mid_result);
+    // publishMidResult(yt_planner_->mid_result);
 
     for(unsigned int i = 0; i < plan.size(); i++)
     {
@@ -280,39 +279,17 @@ void YTPlanner::publishPlan(const std::vector<geometry_msgs::PoseStamped>& path)
     carpose_pub_.publish(carpose);
 }
 
-void YTPlanner::publishMidResult(geometry_msgs::PoseArray& mid_result){
-    if(!initialized_){
-        ROS_ERROR(
-                "This planner has not been initialized yet, but it is being used, please call initialize() before use");
-        return;
-    }
+// void YTPlanner::publishMidResult(geometry_msgs::PoseArray& mid_result){
+//     if(!initialized_){
+//         ROS_ERROR(
+//                 "This planner has not been initialized yet, but it is being used, please call initialize() before use");
+//         return;
+//     }
 
-    mid_result.header.frame_id = frame_id_;
-    mid_result.header.stamp = ros::Time::now();
-    mid_result_pub_.publish(mid_result);
-}
-
-void YTPlanner::publishFootprint()
-{
-    nav_msgs::Path footprintpath;
-
-    if(footprint_spec_.size() == 0)
-    {
-        std::cout << "YT: no footprint" << std::endl;
-        return;
-    }
-    footprintpath.poses.resize(footprint_spec_.size());
-
-    for(unsigned int i = 0; i < footprint_spec_.size(); i++){
-        footprintpath.poses.at(i).pose.position.x = footprint_spec_.at(i).x;
-        footprintpath.poses.at(i).pose.position.y = footprint_spec_.at(i).y;
-        footprintpath.poses.at(i).pose.orientation.w = 1;
-    }
-    footprintpath.header.frame_id = frame_id_;
-    footprintpath.header.stamp = ros::Time::now();
-
-    footprint_spec_pub_.publish(footprintpath);
-}
+//     mid_result.header.frame_id = frame_id_;
+//     mid_result.header.stamp = ros::Time::now();
+//     mid_result_pub_.publish(mid_result);
+// }
 
 
 } //end namespace global_planner

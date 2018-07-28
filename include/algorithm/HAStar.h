@@ -3,12 +3,16 @@
 
 #include "algorithm/algorithm.h"
 #include "toolbox/collisiondetection/collisiondetection.h"
+#include <string>
+
 namespace yt{
 class HAStar : public Algorithm
 {
 public:
 
-HAStar(){}
+HAStar(std::string frame_id, double origin_position_x, double origin_position_y, double gridmap_resolution):
+  Algorithm(frame_id, origin_position_x, origin_position_y, gridmap_resolution)
+{}
 
 virtual bool plan(global_planner::Pose2D& start, 
                     const global_planner::Pose2D& goal, 

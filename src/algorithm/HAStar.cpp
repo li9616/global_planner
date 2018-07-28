@@ -124,7 +124,7 @@ bool yt::HAStar::plan(global_planner::Pose2D& start,
 
           // temp.setT(atan2((nSucc->getY() - nPred->getY()), (nSucc->getX() - nPred->getX())));
           //YT 保存中间结果
-          mid_result.push_back(*nSucc);
+          mid_result_.push_back(*nSucc);
           // set index of the successor
           iSucc = nSucc->setIdx(width, height);
           

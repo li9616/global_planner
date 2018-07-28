@@ -121,6 +121,7 @@ bool yt::AStar::plan(global_planner::Pose2D& start_temp,
 
         ///////////////////////////////////////////////////
         tracePath(nPred, 0, plan);//YT 从链表返回出plan，但是plan里面的东西是不带起终点，而且顺序是反着的
+        publishMidResult(mid_result_);
         return !plan.empty();
         //////////////////////////////////////////////////
       }
@@ -137,12 +138,12 @@ bool yt::AStar::plan(global_planner::Pose2D& start_temp,
           nSucc->before_rot_ =global_planner::Helper::normalizeHeadingRad(atan2((nSucc->getY() - nPred->getY()), (nSucc->getX() - nPred->getX())));
            
 
-          //YT save mid_result//////////////////
+          //YT save mid_result_//////////////////
           global_planner::Pose2D temp;
           temp.setX(nSucc->getX());
           temp.setY(nSucc->getY());
           temp.setT(global_planner::Helper::normalizeHeadingRad(atan2((nSucc->getY() - nPred->getY()), (nSucc->getX() - nPred->getX()))) );//YT orientation before rotation
-          mid_result.push_back(temp);
+          mid_result_.push_back(temp);
           ////////////////////////////////
 
           // set index of the successor

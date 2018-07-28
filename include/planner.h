@@ -79,7 +79,8 @@ class Planner {
 
   nav_msgs::Path path_;
 
-  geometry_msgs::PoseArray mid_result, vor_path_result;
+  // geometry_msgs::PoseArray mid_result;
+  geometry_msgs::PoseArray vor_path_result;
  private:
 
   geometry_msgs::PoseStamped start;

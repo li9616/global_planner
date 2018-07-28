@@ -3,13 +3,16 @@
 
 #include "algorithm/algorithm.h"
 #include "toolbox/collisiondetection/collisiondetection.h"
+#include <string>
+
 namespace yt {
 
 class Voronoi : public Algorithm
 {
 public:
 
-Voronoi(bool using_voronoi):Algorithm()
+Voronoi(std::string frame_id, double origin_position_x, double origin_position_y, double gridmap_resolution, bool using_voronoi):
+    Algorithm(frame_id, origin_position_x, origin_position_y, gridmap_resolution)
 {
     using_voronoi_ = using_voronoi;
 }

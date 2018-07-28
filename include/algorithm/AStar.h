@@ -8,7 +8,9 @@ namespace yt{
 class AStar : public Algorithm
 {
 public:
-AStar(){}
+AStar(std::string frame_id, double origin_position_x, double origin_position_y, double gridmap_resolution):
+  Algorithm(frame_id, origin_position_x, origin_position_y, gridmap_resolution)
+{}
 
 virtual bool plan(global_planner::Pose2D& start, 
                     const global_planner::Pose2D& goal, 
