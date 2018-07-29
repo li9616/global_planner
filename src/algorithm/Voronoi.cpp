@@ -1,4 +1,6 @@
 #include "algorithm/Voronoi.h"
+#include <boost/shared_ptr.hpp>
+
 
 using namespace yt;
 
@@ -8,7 +10,7 @@ bool yt::Voronoi::plan(global_planner::Pose2D& start_temp,
                     global_planner::Node2D* nodes2D, 
                     int width, 
                     int height, 
-                    CollisionDetection* configurationSpace, 
+                    boost::shared_ptr<CollisionDetection> configurationSpace, 
                     boost::shared_ptr<global_planner::DynamicVoronoi> voronoiDiagram, 
                     std::vector<global_planner::Pose2D>& plan){
 

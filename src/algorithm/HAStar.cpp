@@ -4,6 +4,8 @@
 #include "algorithm/algorithm.h"
 #include <Eigen/Dense>
 #include <boost/heap/binomial_heap.hpp>
+#include <boost/shared_ptr.hpp>
+
 
 using namespace yt;
 
@@ -38,7 +40,7 @@ bool yt::HAStar::plan(global_planner::Pose2D& start,
                                global_planner::Node2D* nodes2D,
                                int width,
                                int height,
-                               CollisionDetection* configurationSpace, 
+                               boost::shared_ptr<CollisionDetection> configurationSpace, 
                                boost::shared_ptr<global_planner::DynamicVoronoi> voronoiDiagram,
                                std::vector<global_planner::Pose2D>& plan) {
 

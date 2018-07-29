@@ -279,17 +279,5 @@ void YTPlanner::publishPlan(const std::vector<geometry_msgs::PoseStamped>& path)
     carpose_pub_.publish(carpose);
 }
 
-// void YTPlanner::publishMidResult(geometry_msgs::PoseArray& mid_result){
-//     if(!initialized_){
-//         ROS_ERROR(
-//                 "This planner has not been initialized yet, but it is being used, please call initialize() before use");
-//         return;
-//     }
-
-//     mid_result.header.frame_id = frame_id_;
-//     mid_result.header.stamp = ros::Time::now();
-//     mid_result_pub_.publish(mid_result);
-// }
-
 
 } //end namespace global_planner

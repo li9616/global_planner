@@ -15,12 +15,12 @@ class Toolbox {
 //   static Toolbox* getInstance();
 
     void start();
-    void add(Plugin::Ptr p);
+    void add(std::string name, boost::shared_ptr<global_planner::Plugin> p);
 
   template <typename T>
   boost::shared_ptr<T> get(std::string s) {
     if(s == "GVD"){
-      Plugin::Ptr p;
+      boost::shared_ptr<global_planner::Plugin> p;
       assert(p != NULL);
       boost::shared_ptr<T> p1 = boost::dynamic_pointer_cast<T>(p);
       assert(p1 != NULL);
@@ -30,7 +30,7 @@ class Toolbox {
   
 
   private:
-    std::unordered_map<std::string, Plugin::Ptr> map_;
+    std::unordered_map<std::string, boost::shared_ptr<global_planner::Plugin> > map_;
 };
 }
 

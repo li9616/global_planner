@@ -10,10 +10,15 @@ namespace global_planner {
 class Plugin
 {
 public:
-  typedef boost::shared_ptr<Plugin> Ptr;
+  // typedef boost::shared_ptr<Plugin> Ptr;
 
   Plugin(costmap_2d::Costmap2D* costmap, int cell_divider, std::string frame_id );
   Plugin(costmap_2d::Costmap2D* costmap);
+
+  template <typename T>
+  Plugin(costmap_2d::Costmap2D* costmap, int cell_divider, std::string frame_id )
+  {
+  }
 
 protected:
   std::string frame_id_;

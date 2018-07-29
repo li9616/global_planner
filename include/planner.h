@@ -116,12 +116,16 @@ class Planner {
   yt::Algorithm *yt_alg_, *yt_alg_1;
   
   //YT 碰撞检测plugin相关
-  CollisionDetection* configurationSpace;
+  boost::shared_ptr<CollisionDetection> configurationSpace_;
+  // CollisionDetection* configurationSpace;
+
   std::vector<geometry_msgs::Point> footprint_spec_;
 
   //YT voronoi图plugin相关
   // DynamicVoronoi* voronoiDiagram;
   boost::shared_ptr<DynamicVoronoi> voronoiDiagram;
+
+
 
   bool using_voronoi_;
   std::string frame_id_;

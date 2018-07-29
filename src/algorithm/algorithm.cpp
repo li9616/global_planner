@@ -2,14 +2,16 @@
 #include <Eigen/Dense>
 #include <boost/heap/binomial_heap.hpp>
 #include <geometry_msgs/PoseArray.h>
+#include <boost/shared_ptr.hpp>
+
 // #include <geometry_msgs/PoseStamped.h>
 
 using namespace yt;
 
 Algorithm::Algorithm(std::string frame_id, double origin_position_x, double origin_position_y, double gridmap_resolution) { 
-    ros::NodeHandle private_nh("~");
+
+
     frame_id_ = frame_id;
-    mid_result_pub_ = private_nh.advertise<geometry_msgs::PoseArray>("mid_result", 1);
 
     origin_position_x_ = origin_position_x;
     origin_position_y_ = origin_position_y;
@@ -21,7 +23,7 @@ Algorithm::Algorithm(std::string frame_id, double origin_position_x, double orig
 
 void Algorithm::publishMidResult(const std::vector<global_planner::Pose2D>& mid_result ){
     if(mid_result.size() == 0){
-        std::cout << "YT: algorithm cannot find midresult" << std::endl;
+        std::cout << "YT: algorithm cannot get any midresult, it shouldn't occur" << std::endl;
         return;
     }
     geometry_msgs::PoseArray mid_result_message;

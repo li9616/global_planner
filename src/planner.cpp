@@ -164,7 +164,11 @@ std::cout << "YT start making plan planner.cpp 137" << std::endl;
     std::cout << "end!" << std::endl;
   }
 
-  configurationSpace = new CollisionDetection(costmap_, cell_divider_, footprint_spec_, origin_position_x_, origin_position_y_, gridmap_resolution_);
+  // configurationSpace = new CollisionDetection(costmap_, cell_divider_, footprint_spec_, origin_position_x_, origin_position_y_, gridmap_resolution_);
+  configurationSpace_ = Singleton<CollisionDetection>::GetInstance(costmap_, cell_divider_, footprint_spec_, origin_position_x_, origin_position_y_, gridmap_resolution_);
+
+
+
   // std::cout << "YT: planner.cpp line 163" << std::endl;
 
     // ___________________________
@@ -216,8 +220,8 @@ std::cout << "YT start making plan planner.cpp 137" << std::endl;
 
     //YT nStart和nGoal都是以gridmap原点为原点、gridmap分辨率为单位1的坐标点，生成的结果也是基于gridmap的
     //YT 只将CollisionDetection的指针传进去，实际上CollisionDetection是建立在global_planner下的，而不是在algorithm类中
-    yt_alg_->plan(nStart, nGoal, nodes3D, nodes2D, width, height, configurationSpace, voronoiDiagram, result_path);
-    yt_alg_1->plan(nStart, nGoal, nodes3D, nodes2D, width, height, configurationSpace, voronoiDiagram, result_path_1);
+    yt_alg_->plan(nStart, nGoal, nodes3D, nodes2D, width, height, configurationSpace_, voronoiDiagram, result_path);
+    yt_alg_1->plan(nStart, nGoal, nodes3D, nodes2D, width, height, configurationSpace_, voronoiDiagram, result_path_1);
     
     // ROS_INFO("YT: planning finished");
 
@@ -245,7 +249,7 @@ std::cout << "YT start making plan planner.cpp 137" << std::endl;
     delete [] nodes3D;
     delete [] nodes2D;
 
-    delete configurationSpace;
+    // delete configurationSpace;
     delete yt_alg_;
     delete yt_alg_1;
 
@@ -313,7 +317,7 @@ if(using_voronoi_){
     delete [] nodes3D;
     delete [] nodes2D;
 
-    delete configurationSpace;
+    // delete configurationSpace;
     delete yt_alg_;
     delete yt_alg_1;
 }
