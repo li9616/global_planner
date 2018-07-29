@@ -7,7 +7,6 @@
 #include <boost/shared_ptr.hpp>
 #include <geometry_msgs/PoseArray.h>
 
-
 namespace yt {
 
 class Voronoi : public Algorithm

@@ -59,6 +59,11 @@ global_planner::Planner::Planner(costmap_2d::Costmap2D* costmap,
   binMap_not_[x] = new bool[height];}
  
 
+  boost::shared_ptr<yt::Algorithm> p1(new yt::AStar(frame_id_, origin_position_x_, origin_position_y_, gridmap_resolution_));
+  yt_alg_ = p1;
+
+  boost::shared_ptr<yt::Algorithm> p2(new yt::Voronoi(frame_id_, origin_position_x_, origin_position_y_, gridmap_resolution_, using_voronoi_));
+  yt_alg_1 = p2;
 }
 
 global_planner::Planner::~Planner()
@@ -209,10 +214,10 @@ std::cout << "YT start making plan planner.cpp 137" << std::endl;
     // CLEAR THE PATH
     path_.poses.clear();
 
-    yt_alg_ = new yt::AStar(frame_id_, origin_position_x_, origin_position_y_, gridmap_resolution_);
-    std::cout << "YT: planner.cpp line 213" << std::endl;
-    yt_alg_1 = new yt::Voronoi(frame_id_, origin_position_x_, origin_position_y_, gridmap_resolution_, using_voronoi_);
-    std::cout << "YT: planner.cpp line 215" << std::endl;
+    // yt_alg_ = new yt::AStar(frame_id_, origin_position_x_, origin_position_y_, gridmap_resolution_);
+    // std::cout << "YT: planner.cpp line 213" << std::endl;
+    // yt_alg_1 = new yt::Voronoi(frame_id_, origin_position_x_, origin_position_y_, gridmap_resolution_, using_voronoi_);
+    // std::cout << "YT: planner.cpp line 215" << std::endl;
     
     std::vector<Pose2D> result_path,result_path_1;
     result_path.clear();
@@ -242,16 +247,12 @@ std::cout << "YT start making plan planner.cpp 137" << std::endl;
     {
       std::cout << "YT: no result_path" << std::endl;
       
-    if(voronoiDiagram!= NULL){
-      // delete voronoiDiagram;
-    }
 
     delete [] nodes3D;
     delete [] nodes2D;
 
-    // delete configurationSpace;
-    delete yt_alg_;
-    delete yt_alg_1;
+    // delete yt_alg_;
+    // delete yt_alg_1;
 
       return;
     }
@@ -310,16 +311,12 @@ std::cout << "YT start making plan planner.cpp 137" << std::endl;
 
 //////////////////////////////////////////////////////////////////////////
 
-if(using_voronoi_){
-  // delete voronoiDiagram;
-}
 
     delete [] nodes3D;
     delete [] nodes2D;
 
-    // delete configurationSpace;
-    delete yt_alg_;
-    delete yt_alg_1;
+    // delete yt_alg_;
+    // delete yt_alg_1;
 }
 
 void global_planner::Planner::tracePath(const Pose2D* node, int i, std::vector<Pose2D>& path)

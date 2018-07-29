@@ -18,7 +18,7 @@
 #include "toolbox/voronoi/dynamicvoronoi.h"
 #include "algorithm/algorithm.h"
 #include "base_type/pose2d.h"
-#include "boost/shared_ptr.hpp"
+#include <boost/shared_ptr.hpp>
 #include <string>
 
 
@@ -113,8 +113,12 @@ class Planner {
   double gridmap_resolution_;//YT todo: 删除gridmap的实例
 
 
-  yt::Algorithm *yt_alg_, *yt_alg_1;
-  
+  // yt::Algorithm *yt_alg_, *yt_alg_1;
+  boost::shared_ptr<yt::Algorithm> yt_alg_;
+  boost::shared_ptr<yt::Algorithm> yt_alg_1;
+
+
+
   //YT 碰撞检测plugin相关
   boost::shared_ptr<CollisionDetection> configurationSpace_;
   // CollisionDetection* configurationSpace;

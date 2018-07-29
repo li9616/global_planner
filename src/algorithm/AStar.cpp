@@ -90,6 +90,8 @@ bool yt::AStar::plan(global_planner::Pose2D& start_temp,
   global_planner::Node2D* nPred;
   global_planner::Node2D* nSucc;
 
+  mid_result_.clear();
+
   // continue until O empty
   while (!O.empty()) {
     // pop node with lowest cost from priority queue
